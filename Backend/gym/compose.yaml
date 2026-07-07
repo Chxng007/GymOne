@@ -1,0 +1,15 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: gymone-postgres
+    environment:
+      POSTGRES_DB: gymone_db
+      POSTGRES_USER: gymone
+      POSTGRES_PASSWORD: gymone
+    ports:
+      - "5434:5432"
+    volumes:
+      - gymone_postgres_data:/var/lib/postgresql/data
+
+volumes:
+  gymone_postgres_data:
