@@ -14,6 +14,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import org.hibernate.annotations.BatchSize;
 
 @Entity
 @Table(name = "rutina_dias")
@@ -31,6 +32,7 @@ public class RutinaDia {
     private String dia;
 
     @OneToMany(mappedBy = "rutinaDia", cascade = CascadeType.ALL, orphanRemoval = true)
+    @BatchSize(size = 25)
     private List<RutinaEjercicio> ejercicios = new ArrayList<>();
 
     public Long getId() {

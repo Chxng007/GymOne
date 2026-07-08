@@ -91,10 +91,20 @@ export function Caja() {
 
   if (loading) return <p>Cargando...</p>
 
-  if (!sesion) {
+  const abierta = sesion?.estado === 'ABIERTA'
+
+  if (!sesion || !abierta) {
     return (
       <div>
         <h1>Caja</h1>
+
+        {sesion && (
+          <Card title="Última sesión (cerrada)" style={{ maxWidth: 320, marginBottom: 'var(--spacing-4)' }}>
+            <p style={{ margin: 0, color: 'var(--color-text-muted)' }}>Saldo final</p>
+            <p style={{ fontSize: 22, fontWeight: 700, margin: 0 }}>${Number(sesion.saldoFinal ?? sesion.saldoActual).toLocaleString('es-CO')}</p>
+          </Card>
+        )}
+
         <Card title="Abrir caja del día" style={{ maxWidth: 320 }}>
           <form onSubmit={handleAbrir} style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-3)' }}>
             <Input
@@ -112,8 +122,6 @@ export function Caja() {
       </div>
     )
   }
-
-  const abierta = sesion.estado === 'ABIERTA'
 
   return (
     <div>

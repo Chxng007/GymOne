@@ -35,11 +35,20 @@ export function PagoForm({ clienteId, onSaved }) {
 
   useEffect(() => {
     if (clienteId) return
-    listarClientes().then(setClientes)
+    listarClientes().then((data) => {
+      setClientes(data)
+      if (data.length > 0) {
+        setForm((current) => ({ ...current, clienteId: current.clienteId || String(data[0].id) }))
+      }
+    })
   }, [clienteId])
 
   async function handleSubmit(e) {
     e.preventDefault()
+    if (!clienteId && !form.clienteId) {
+      showToast('Selecciona un cliente', 'danger')
+      return
+    }
     setSaving(true)
     try {
       await crearPago({

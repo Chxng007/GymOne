@@ -69,7 +69,7 @@ public class DashboardService {
         long renovaciones = suscripcionRepository.countByUltimaRenovacion(hoy);
         long asistenciaHoy = asistenciaRepository.findByFechaOrderByHoraEntradaDesc(hoy).size();
 
-        List<Venta> ventasHoy = ventaRepository.findByFechaBetween(inicioHoy, finHoy);
+        List<Venta> ventasHoy = ventaRepository.findByFechaBetweenWithItems(inicioHoy, finHoy);
         int productosVendidos = ventasHoy.stream()
                 .flatMap(v -> v.getItems().stream())
                 .mapToInt(VentaItem::getCantidad)
