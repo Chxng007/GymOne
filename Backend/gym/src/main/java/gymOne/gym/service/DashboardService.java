@@ -5,12 +5,16 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import gymOne.gym.dto.CajaSesionResponse;
 import gymOne.gym.dto.DashboardResponse;
+import gymOne.gym.dto.TendenciaDiaResponse;
+import gymOne.gym.entity.Asistencia;
 import gymOne.gym.entity.Cliente;
 import gymOne.gym.entity.Gasto;
 import gymOne.gym.entity.Pago;
@@ -97,6 +101,28 @@ public class DashboardService {
                 gananciaMensual,
                 cajaActual != null,
                 cajaActual != null ? cajaActual.saldoActual() : null);
+    }
+
+    public List<TendenciaDiaResponse> tendencia() {
+        LocalDate hoy = LocalDate.now();
+        LocalDate hace6Dias = hoy.minusDays(6);
+        LocalDateTime inicio = hace6Dias.atStartOfDay();
+        LocalDateTime fin = hoy.atTime(LocalTime.MAX);
+
+        Map<LocalDate, BigDecimal> ingresosPorDia = pagoRepository.findByFechaBetween(inicio, fin).stream()
+                .collect(Collectors.groupingBy(
+                        p -> p.getFecha().toLocalDate(),
+                        Collectors.reducing(BigDecimal.ZERO, Pago::getMonto, BigDecimal::add)));
+
+        Map<LocalDate, Long> asistenciasPorDia = asistenciaRepository.findByFechaBetween(hace6Dias, hoy).stream()
+                .collect(Collectors.groupingBy(Asistencia::getFecha, Collectors.counting()));
+
+        return hace6Dias.datesUntil(hoy.plusDays(1))
+                .map(dia -> new TendenciaDiaResponse(
+                        dia,
+                        ingresosPorDia.getOrDefault(dia, BigDecimal.ZERO),
+                        asistenciasPorDia.getOrDefault(dia, 0L)))
+                .toList();
     }
 
     private BigDecimal sumarPagos(List<Pago> pagos) {

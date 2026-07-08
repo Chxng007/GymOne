@@ -1,7 +1,62 @@
 @import './variables.css';
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 
 * {
   box-sizing: border-box;
+}
+
+::selection {
+  background: var(--color-primary);
+  color: var(--color-bg);
+}
+
+.ui-field {
+  transition: border-color 200ms ease, box-shadow 200ms ease;
+}
+
+.ui-field:focus {
+  outline: none;
+  border-color: var(--color-primary) !important;
+  box-shadow: 0 0 0 4px rgba(57, 255, 20, 0.14);
+}
+
+.ui-btn-primary {
+  transition: transform 200ms ease, box-shadow 200ms ease;
+}
+
+.ui-btn-primary:hover:not(:disabled) {
+  transform: scale(1.02);
+  box-shadow: 0 0 22px rgba(57, 255, 20, 0.4);
+}
+
+.ui-icon-btn {
+  transition: background 180ms ease;
+}
+
+.ui-icon-btn:hover {
+  background: var(--color-surface) !important;
+}
+
+.ui-hover-accent {
+  transition: border-color 200ms ease, color 200ms ease;
+}
+
+.ui-hover-accent:hover {
+  border-color: var(--color-accent) !important;
+  color: var(--color-accent) !important;
+}
+
+.ui-link-underline:hover {
+  text-decoration: underline !important;
+}
+
+.ui-oauth-btn {
+  transition: border-color 200ms ease, background 200ms ease;
+}
+
+.ui-oauth-btn:hover {
+  border-color: var(--color-accent) !important;
+  background: #202632 !important;
 }
 
 html,
@@ -19,6 +74,13 @@ body {
 
 a {
   color: var(--color-primary);
+}
+
+h1 {
+  font-size: 26px;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  margin: 0 0 var(--spacing-4);
 }
 
 button,

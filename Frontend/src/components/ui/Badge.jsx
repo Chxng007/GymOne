@@ -15,12 +15,12 @@ export function Badge({ children, variant = 'neutral' }) {
         alignItems: 'center',
         gap: 6,
         color,
-        background: 'var(--color-surface-alt)',
-        border: `1px solid ${color}`,
+        background: variant === 'neutral' ? 'var(--color-surface-alt)' : `color-mix(in srgb, ${color} 10%, transparent)`,
+        border: `1px solid ${variant === 'neutral' ? 'var(--color-border-input)' : color}`,
         borderRadius: 999,
-        padding: '2px 10px',
-        fontSize: 12,
-        fontWeight: 600,
+        padding: '3px 12px',
+        fontSize: 12.5,
+        fontWeight: 700,
       }}
     >
       {children}

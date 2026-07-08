@@ -12,6 +12,8 @@ public interface AsistenciaRepository extends JpaRepository<Asistencia, Long> {
 
     List<Asistencia> findByFechaOrderByHoraEntradaDesc(LocalDate fecha);
 
+    List<Asistencia> findByFechaBetween(LocalDate desde, LocalDate hasta);
+
     List<Asistencia> findByClienteIdOrderByHoraEntradaDesc(Long clienteId);
 
     Optional<Asistencia> findByClienteIdAndFechaAndHoraSalidaIsNull(Long clienteId, LocalDate fecha);

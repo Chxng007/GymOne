@@ -11,8 +11,10 @@ export function Table({ columns, data, emptyMessage = 'Sin datos' }) {
                 padding: 'var(--spacing-2) var(--spacing-3)',
                 borderBottom: '1px solid var(--color-border)',
                 color: 'var(--color-text-muted)',
-                fontSize: 13,
+                fontSize: 12.5,
                 fontWeight: 600,
+                textTransform: 'uppercase',
+                letterSpacing: '0.03em',
               }}
             >
               {col.header}
@@ -42,7 +44,7 @@ export function Table({ columns, data, emptyMessage = 'Sin datos' }) {
                   key={col.key}
                   style={{
                     padding: 'var(--spacing-2) var(--spacing-3)',
-                    borderBottom: '1px solid var(--color-border)',
+                    borderBottom: '1px solid var(--color-border-subtle)',
                   }}
                 >
                   {col.render ? col.render(row) : row[col.key]}

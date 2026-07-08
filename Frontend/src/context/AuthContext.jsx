@@ -7,18 +7,19 @@ const TOKEN_KEY = 'gymone_token'
 const USER_KEY = 'gymone_user'
 
 export function AuthProvider({ children }) {
-  const [token, setToken] = useState(() => localStorage.getItem(TOKEN_KEY))
+  const [token, setToken] = useState(() => localStorage.getItem(TOKEN_KEY) ?? sessionStorage.getItem(TOKEN_KEY))
   const [user, setUser] = useState(() => {
-    const stored = localStorage.getItem(USER_KEY)
+    const stored = localStorage.getItem(USER_KEY) ?? sessionStorage.getItem(USER_KEY)
     return stored ? JSON.parse(stored) : null
   })
 
-  async function login(correo, contrasena) {
+  async function login(correo, contrasena, remember = true) {
     const data = await loginRequest(correo, contrasena)
     const loggedUser = { nombre: data.nombre, correo: data.correo, rol: data.rol }
+    const storage = remember ? localStorage : sessionStorage
 
-    localStorage.setItem(TOKEN_KEY, data.token)
-    localStorage.setItem(USER_KEY, JSON.stringify(loggedUser))
+    storage.setItem(TOKEN_KEY, data.token)
+    storage.setItem(USER_KEY, JSON.stringify(loggedUser))
     setToken(data.token)
     setUser(loggedUser)
   }
@@ -26,6 +27,8 @@ export function AuthProvider({ children }) {
   function logout() {
     localStorage.removeItem(TOKEN_KEY)
     localStorage.removeItem(USER_KEY)
+    sessionStorage.removeItem(TOKEN_KEY)
+    sessionStorage.removeItem(USER_KEY)
     setToken(null)
     setUser(null)
   }

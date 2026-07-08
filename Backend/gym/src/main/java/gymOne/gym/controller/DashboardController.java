@@ -1,10 +1,13 @@
 package gymOne.gym.controller;
 
+import java.util.List;
+
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import gymOne.gym.dto.DashboardResponse;
+import gymOne.gym.dto.TendenciaDiaResponse;
 import gymOne.gym.service.DashboardService;
 
 @RestController
@@ -20,5 +23,10 @@ public class DashboardController {
     @GetMapping("/resumen")
     public DashboardResponse resumen() {
         return dashboardService.resumen();
+    }
+
+    @GetMapping("/tendencia")
+    public List<TendenciaDiaResponse> tendencia() {
+        return dashboardService.tendencia();
     }
 }
