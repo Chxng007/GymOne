@@ -125,31 +125,35 @@ export function Caja() {
 
   return (
     <div>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 'var(--spacing-4)' }}>
-        <h1 style={{ margin: 0 }}>Caja</h1>
-        <Badge variant={abierta ? 'success' : 'neutral'}>{sesion.estado}</Badge>
+      <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 24 }}>
+        <div>
+          <h1 style={{ margin: '0 0 10px' }}>Caja</h1>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+            <Badge variant={abierta ? 'success' : 'neutral'}>{sesion.estado}</Badge>
+          </div>
+        </div>
       </div>
 
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: 'var(--spacing-3)', marginBottom: 'var(--spacing-4)' }}>
         <Card>
-          <p style={{ margin: 0, color: 'var(--color-text-muted)' }}>Saldo inicial</p>
-          <p style={{ fontSize: 22, fontWeight: 700, margin: 0 }}>${Number(sesion.saldoInicial).toLocaleString('es-CO')}</p>
+          <p style={{ margin: 0, color: 'var(--color-text-muted)', fontSize: 12, fontWeight: 700, textTransform: 'uppercase', fontFamily: 'var(--font-display)' }}>Saldo inicial</p>
+          <p style={{ fontSize: 24, fontWeight: 800, margin: '10px 0 0', fontFamily: 'var(--font-display)' }}>${Number(sesion.saldoInicial).toLocaleString('es-CO')}</p>
         </Card>
         <Card>
-          <p style={{ margin: 0, color: 'var(--color-text-muted)' }}>Ingresos</p>
-          <p style={{ fontSize: 22, fontWeight: 700, margin: 0, color: 'var(--color-success)' }}>
+          <p style={{ margin: 0, color: 'var(--color-text-muted)', fontSize: 12, fontWeight: 700, textTransform: 'uppercase', fontFamily: 'var(--font-display)' }}>Ingresos</p>
+          <p style={{ fontSize: 24, fontWeight: 800, margin: '10px 0 0', color: 'var(--color-success)', fontFamily: 'var(--font-display)' }}>
             ${Number(sesion.totalIngresos).toLocaleString('es-CO')}
           </p>
         </Card>
         <Card>
-          <p style={{ margin: 0, color: 'var(--color-text-muted)' }}>Egresos</p>
-          <p style={{ fontSize: 22, fontWeight: 700, margin: 0, color: 'var(--color-danger)' }}>
+          <p style={{ margin: 0, color: 'var(--color-text-muted)', fontSize: 12, fontWeight: 700, textTransform: 'uppercase', fontFamily: 'var(--font-display)' }}>Egresos</p>
+          <p style={{ fontSize: 24, fontWeight: 800, margin: '10px 0 0', color: 'var(--color-danger)', fontFamily: 'var(--font-display)' }}>
             ${Number(sesion.totalEgresos).toLocaleString('es-CO')}
           </p>
         </Card>
-        <Card>
-          <p style={{ margin: 0, color: 'var(--color-text-muted)' }}>Saldo actual</p>
-          <p style={{ fontSize: 22, fontWeight: 700, margin: 0 }}>${Number(sesion.saldoActual).toLocaleString('es-CO')}</p>
+        <Card style={{ border: '2px solid var(--color-primary-strong)' }}>
+          <p style={{ margin: 0, color: 'var(--color-accent)', fontSize: 12, fontWeight: 700, textTransform: 'uppercase', fontFamily: 'var(--font-display)' }}>Saldo actual</p>
+          <p style={{ fontSize: 24, fontWeight: 800, margin: '10px 0 0', fontFamily: 'var(--font-display)' }}>${Number(sesion.saldoActual).toLocaleString('es-CO')}</p>
         </Card>
       </div>
 
@@ -166,16 +170,18 @@ export function Caja() {
         </Card>
       )}
 
-      <Table
-        columns={[
-          { key: 'tipo', header: 'Tipo' },
-          { key: 'concepto', header: 'Concepto' },
-          { key: 'monto', header: 'Monto', render: (row) => `$${Number(row.monto).toLocaleString('es-CO')}` },
-          { key: 'fecha', header: 'Fecha', render: (row) => new Date(row.fecha).toLocaleTimeString('es-CO') },
-        ]}
-        data={sesion.movimientos}
-        emptyMessage="Sin movimientos registrados"
-      />
+      <Card title="Transacciones recientes" style={{ padding: 0, overflow: 'hidden' }}>
+        <Table
+          columns={[
+            { key: 'tipo', header: 'Tipo' },
+            { key: 'concepto', header: 'Concepto' },
+            { key: 'monto', header: 'Monto', render: (row) => `$${Number(row.monto).toLocaleString('es-CO')}` },
+            { key: 'fecha', header: 'Fecha', render: (row) => new Date(row.fecha).toLocaleTimeString('es-CO') },
+          ]}
+          data={sesion.movimientos}
+          emptyMessage="Sin movimientos registrados"
+        />
+      </Card>
 
       {abierta && (
         <div style={{ marginTop: 'var(--spacing-4)' }}>

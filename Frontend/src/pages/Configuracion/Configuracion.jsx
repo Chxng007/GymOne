@@ -14,6 +14,7 @@ const EMPTY_FORM = {
   impuestoPorcentaje: '0',
   horarioApertura: '',
   horarioCierre: '',
+  metaIngresosMensual: '',
 }
 
 export function Configuracion() {
@@ -45,6 +46,7 @@ export function Configuracion() {
         telefono: form.telefono || null,
         horarioApertura: form.horarioApertura || null,
         horarioCierre: form.horarioCierre || null,
+        metaIngresosMensual: form.metaIngresosMensual === '' ? null : Number(form.metaIngresosMensual),
       })
       showToast('Configuración guardada', 'success')
     } catch {
@@ -60,24 +62,32 @@ export function Configuracion() {
     <div>
       <h1>Configuración</h1>
 
-      <Card title="Datos del gimnasio" style={{ maxWidth: 480 }}>
+      <Card title="Datos del gimnasio" style={{ maxWidth: 640 }}>
         <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-3)' }}>
           <Input label="Nombre" required value={form.nombre} onChange={(e) => setForm({ ...form, nombre: e.target.value })} />
           <Input label="Logo (URL)" value={form.logoUrl} onChange={(e) => setForm({ ...form, logoUrl: e.target.value })} />
           <Input label="Dirección" value={form.direccion} onChange={(e) => setForm({ ...form, direccion: e.target.value })} />
           <Input label="Teléfono" value={form.telefono} onChange={(e) => setForm({ ...form, telefono: e.target.value })} />
-          <Input label="Moneda" required value={form.moneda} onChange={(e) => setForm({ ...form, moneda: e.target.value })} />
-          <Input
-            label="Impuesto (%)"
-            type="number"
-            value={form.impuestoPorcentaje}
-            onChange={(e) => setForm({ ...form, impuestoPorcentaje: e.target.value })}
-          />
-          <div style={{ display: 'flex', gap: 8 }}>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'var(--spacing-3)' }}>
+            <Input label="Moneda" required value={form.moneda} onChange={(e) => setForm({ ...form, moneda: e.target.value })} />
+            <Input
+              label="Impuesto (%)"
+              type="number"
+              value={form.impuestoPorcentaje}
+              onChange={(e) => setForm({ ...form, impuestoPorcentaje: e.target.value })}
+            />
+          </div>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'var(--spacing-3)' }}>
             <Input label="Apertura" type="time" value={form.horarioApertura} onChange={(e) => setForm({ ...form, horarioApertura: e.target.value })} />
             <Input label="Cierre" type="time" value={form.horarioCierre} onChange={(e) => setForm({ ...form, horarioCierre: e.target.value })} />
           </div>
-          <Button type="submit" disabled={saving}>
+          <Input
+            label="Meta de ingresos mensual"
+            type="number"
+            value={form.metaIngresosMensual}
+            onChange={(e) => setForm({ ...form, metaIngresosMensual: e.target.value })}
+          />
+          <Button type="submit" disabled={saving} style={{ marginTop: 6, alignSelf: 'flex-start' }}>
             {saving ? 'Guardando...' : 'Guardar'}
           </Button>
         </form>

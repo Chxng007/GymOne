@@ -68,13 +68,13 @@ function useIsDesktop(breakpoint = 900) {
 function LogoMark({ size = 34 }) {
   return (
     <motion.div
-      animate={{ boxShadow: ['0 0 16px rgba(57,255,20,0.45)', '0 0 28px rgba(57,255,20,0.7)', '0 0 16px rgba(57,255,20,0.45)'] }}
+      animate={{ boxShadow: ['0 0 16px rgba(56,189,248,0.45)', '0 0 28px rgba(56,189,248,0.7)', '0 0 16px rgba(56,189,248,0.45)'] }}
       transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
       style={{
         width: size,
         height: size,
         borderRadius: size * 0.27,
-        background: 'linear-gradient(135deg, var(--color-primary), #00FF7F)',
+        background: 'linear-gradient(135deg, #38bdf8, #0ea5e9)',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
@@ -98,7 +98,7 @@ function GlowOrb({ size, top, left, delay }) {
         width: size,
         height: size,
         borderRadius: '50%',
-        background: 'radial-gradient(circle, rgba(57,255,20,0.22), transparent 70%)',
+        background: 'radial-gradient(circle, rgba(56,189,248,0.22), transparent 70%)',
         filter: 'blur(10px)',
         pointerEvents: 'none',
       }}

@@ -11,10 +11,11 @@ export function Table({ columns, data, emptyMessage = 'Sin datos' }) {
                 padding: 'var(--spacing-2) var(--spacing-3)',
                 borderBottom: '1px solid var(--color-border)',
                 color: 'var(--color-text-muted)',
-                fontSize: 12.5,
-                fontWeight: 600,
+                fontSize: 11.5,
+                fontWeight: 700,
+                fontFamily: 'var(--font-display)',
                 textTransform: 'uppercase',
-                letterSpacing: '0.03em',
+                letterSpacing: '0.04em',
               }}
             >
               {col.header}
@@ -38,7 +39,7 @@ export function Table({ columns, data, emptyMessage = 'Sin datos' }) {
           </tr>
         ) : (
           data.map((row, rowIndex) => (
-            <tr key={row.id ?? rowIndex}>
+            <tr key={row.id ?? rowIndex} className="ui-table-row">
               {columns.map((col) => (
                 <td
                   key={col.key}

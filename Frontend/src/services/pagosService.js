@@ -9,3 +9,8 @@ export async function crearPago(payload) {
   const { data } = await api.post('/pagos', payload)
   return data
 }
+
+export async function notificarPago(id) {
+  const { data } = await api.post(`/pagos/${id}/notificar`)
+  return data
+}

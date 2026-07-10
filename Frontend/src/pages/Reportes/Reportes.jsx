@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Badge } from '../../components/ui/Badge'
 import { Card } from '../../components/ui/Card'
+
 import { Table } from '../../components/ui/Table'
 import { Tabs } from '../../components/ui/Tabs'
 import { useToast } from '../../context/ToastContext'
@@ -216,9 +217,34 @@ export function Reportes() {
   if (loading) return <p>Cargando...</p>
   if (!datos) return <p>No hay datos disponibles</p>
 
+  const ingresosTotales = datos.pagos.reduce((acc, p) => acc + Number(p.monto), 0)
+  const miembrosActivos = datos.clientes.filter((c) => c.estado === 'ACTIVO').length
+  const ventasTotales = datos.ventas.reduce((acc, v) => acc + Number(v.total), 0)
+
   return (
     <div>
-      <h1>Reportes</h1>
+      <h1 style={{ marginBottom: 6 }}>Reportes y análisis</h1>
+      <p style={{ color: 'var(--color-text-muted)', fontSize: 14.5, margin: '0 0 24px' }}>Información detallada del rendimiento y crecimiento del gimnasio.</p>
+
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 16, marginBottom: 22 }}>
+        <Card style={{ padding: '20px 22px' }}>
+          <p style={{ margin: 0, color: 'var(--color-text-muted)', fontSize: 12, fontWeight: 700, textTransform: 'uppercase', fontFamily: 'var(--font-display)' }}>Ingresos totales</p>
+          <p style={{ fontSize: 24, fontWeight: 800, margin: '10px 0 0', fontFamily: 'var(--font-display)' }}>{money(ingresosTotales)}</p>
+        </Card>
+        <Card style={{ padding: '20px 22px' }}>
+          <p style={{ margin: 0, color: 'var(--color-text-muted)', fontSize: 12, fontWeight: 700, textTransform: 'uppercase', fontFamily: 'var(--font-display)' }}>Miembros activos</p>
+          <p style={{ fontSize: 24, fontWeight: 800, margin: '10px 0 0', fontFamily: 'var(--font-display)' }}>{miembrosActivos}</p>
+        </Card>
+        <Card style={{ padding: '20px 22px' }}>
+          <p style={{ margin: 0, color: 'var(--color-text-muted)', fontSize: 12, fontWeight: 700, textTransform: 'uppercase', fontFamily: 'var(--font-display)' }}>Ventas totales</p>
+          <p style={{ fontSize: 24, fontWeight: 800, margin: '10px 0 0', fontFamily: 'var(--font-display)' }}>{money(ventasTotales)}</p>
+        </Card>
+        <Card style={{ padding: '20px 22px' }}>
+          <p style={{ margin: 0, color: 'var(--color-text-muted)', fontSize: 12, fontWeight: 700, textTransform: 'uppercase', fontFamily: 'var(--font-display)' }}>Asistencia hoy</p>
+          <p style={{ fontSize: 24, fontWeight: 800, margin: '10px 0 0', fontFamily: 'var(--font-display)' }}>{datos.asistencias.length}</p>
+        </Card>
+      </div>
+
       <Tabs
         items={[
           { key: 'clientes', label: 'Clientes', content: <ReporteClientes clientes={datos.clientes} /> },

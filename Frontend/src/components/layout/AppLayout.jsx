@@ -1,5 +1,6 @@
 import { AnimatePresence, motion } from 'framer-motion'
 import { useLocation, useOutlet } from 'react-router-dom'
+import { ChatWidget } from './ChatWidget'
 import { Sidebar } from './Sidebar'
 import { Topbar } from './Topbar'
 
@@ -12,7 +13,7 @@ export function AppLayout() {
       <Sidebar />
       <div style={{ flex: 1, display: 'flex', flexDirection: 'column', minWidth: 0 }}>
         <Topbar />
-        <main style={{ flex: 1, padding: '36px 32px 60px', overflow: 'auto' }}>
+        <main style={{ flex: 1, padding: '30px 32px 60px', overflow: 'auto' }}>
           <AnimatePresence mode="wait">
             <motion.div
               key={location.pathname}
@@ -26,6 +27,7 @@ export function AppLayout() {
           </AnimatePresence>
         </main>
       </div>
+      <ChatWidget />
     </div>
   )
 }

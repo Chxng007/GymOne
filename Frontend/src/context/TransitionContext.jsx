@@ -11,7 +11,7 @@ export function TransitionProvider({ children }) {
   function cover(origin, color) {
     return new Promise((resolve) => {
       resolveCoverRef.current = resolve
-      setState({ origin, color: color ?? 'linear-gradient(135deg, #39FF14, #2FE010)', phase: 'covering' })
+      setState({ origin, color: color ?? 'linear-gradient(135deg, #89ceff, #38bdf8)', phase: 'covering' })
     })
   }
 

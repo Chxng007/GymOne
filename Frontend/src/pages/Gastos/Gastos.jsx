@@ -70,7 +70,15 @@ export function Gastos() {
 
   return (
     <div>
-      <h1>Gastos</h1>
+      <h1 style={{ marginBottom: 6 }}>Gastos operativos</h1>
+      <p style={{ color: 'var(--color-text-muted)', fontSize: 14.5, margin: '0 0 24px' }}>Resumen de mantenimiento y gastos generales.</p>
+
+      <Card style={{ padding: '20px 22px', maxWidth: 260, marginBottom: 22 }}>
+        <div style={{ color: 'var(--color-text-muted)', fontSize: 12, fontWeight: 700, textTransform: 'uppercase', fontFamily: 'var(--font-display)', marginBottom: 10 }}>
+          Gasto del mes
+        </div>
+        <div style={{ fontSize: 24, fontWeight: 800, color: 'var(--color-text)', fontFamily: 'var(--font-display)' }}>${totalMes.toLocaleString('es-CO')}</div>
+      </Card>
 
       <Card title="Registrar gasto" style={{ marginBottom: 'var(--spacing-4)' }}>
         <form onSubmit={handleSubmit} style={{ display: 'flex', flexWrap: 'wrap', gap: 'var(--spacing-3)', alignItems: 'flex-end' }}>
@@ -83,32 +91,30 @@ export function Gastos() {
         </form>
       </Card>
 
-      <p style={{ fontSize: 18 }}>
-        Total del mes: <strong>${totalMes.toLocaleString('es-CO')}</strong>
-      </p>
-
       {loading ? (
         <p>Cargando...</p>
       ) : (
-        <Table
-          columns={[
-            { key: 'fecha', header: 'Fecha' },
-            { key: 'categoria', header: 'Categoría' },
-            { key: 'descripcion', header: 'Descripción' },
-            { key: 'monto', header: 'Monto', render: (row) => `$${Number(row.monto).toLocaleString('es-CO')}` },
-            {
-              key: 'acciones',
-              header: '',
-              render: (row) => (
-                <Button variant="secondary" onClick={() => handleEliminar(row.id)}>
-                  Eliminar
-                </Button>
-              ),
-            },
-          ]}
-          data={gastos}
-          emptyMessage="No hay gastos registrados"
-        />
+        <Card style={{ padding: 0, overflow: 'hidden' }}>
+          <Table
+            columns={[
+              { key: 'fecha', header: 'Fecha' },
+              { key: 'categoria', header: 'Categoría' },
+              { key: 'descripcion', header: 'Descripción' },
+              { key: 'monto', header: 'Monto', render: (row) => `$${Number(row.monto).toLocaleString('es-CO')}` },
+              {
+                key: 'acciones',
+                header: '',
+                render: (row) => (
+                  <Button variant="secondary" onClick={() => handleEliminar(row.id)}>
+                    Eliminar
+                  </Button>
+                ),
+              },
+            ]}
+            data={gastos}
+            emptyMessage="No hay gastos registrados"
+          />
+        </Card>
       )}
     </div>
   )

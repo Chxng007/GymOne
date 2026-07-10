@@ -13,5 +13,6 @@ public record ConfiguracionRequest(
         @NotBlank String moneda,
         BigDecimal impuestoPorcentaje,
         LocalTime horarioApertura,
-        LocalTime horarioCierre) {
+        LocalTime horarioCierre,
+        BigDecimal metaIngresosMensual) {
 }

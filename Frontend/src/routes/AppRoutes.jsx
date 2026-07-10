@@ -19,6 +19,7 @@ const Gastos = lazy(() => import('../pages/Gastos/Gastos').then((m) => ({ defaul
 const Entrenadores = lazy(() => import('../pages/Entrenadores/Entrenadores').then((m) => ({ default: m.Entrenadores })))
 const Reportes = lazy(() => import('../pages/Reportes/Reportes').then((m) => ({ default: m.Reportes })))
 const Configuracion = lazy(() => import('../pages/Configuracion/Configuracion').then((m) => ({ default: m.Configuracion })))
+const RegistroPublico = lazy(() => import('../pages/RegistroPublico/RegistroPublico').then((m) => ({ default: m.RegistroPublico })))
 
 function HomeRedirect() {
   const { isAuthenticated } = useAuth()
@@ -39,6 +40,7 @@ export function AppRoutes() {
       <Routes>
         <Route path="/" element={<HomeRedirect />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/registro" element={<RegistroPublico />} />
 
         <Route element={<PrivateRoute />}>
           <Route element={<AppLayout />}>

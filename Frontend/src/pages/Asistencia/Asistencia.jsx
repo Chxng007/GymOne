@@ -64,70 +64,79 @@ export function Asistencia() {
 
   return (
     <div>
-      <h1>Asistencia</h1>
+      <div style={{ marginBottom: 24 }}>
+        <h1 style={{ margin: '0 0 6px' }}>Gestión de asistencia</h1>
+        <p style={{ color: 'var(--color-text-muted)', fontSize: 14.5, margin: 0 }}>Registros de ingreso y salida de clientes en el día.</p>
+      </div>
 
-      <Card title="Buscar cliente" style={{ marginBottom: 'var(--spacing-4)' }}>
-        <form onSubmit={handleBuscar} style={{ display: 'flex', gap: 8, marginBottom: resultados.length ? 'var(--spacing-3)' : 0 }}>
-          <Input
-            placeholder="Nombre o documento"
-            value={busqueda}
-            onChange={(e) => setBusqueda(e.target.value)}
-          />
-          <Button type="submit">Buscar</Button>
-        </form>
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1.6fr', gap: 16, alignItems: 'start' }}>
+        <Card title="Registro de ingreso">
+          <p style={{ color: 'var(--color-text-muted)', fontSize: 13, margin: '-8px 0 18px' }}>
+            Busca por nombre o documento para verificar el estado de la membresía.
+          </p>
+          <form onSubmit={handleBuscar} style={{ display: 'flex', gap: 8, marginBottom: resultados.length ? 'var(--spacing-3)' : 0 }}>
+            <Input placeholder="Nombre o documento" value={busqueda} onChange={(e) => setBusqueda(e.target.value)} style={{ flex: 1 }} />
+            <Button type="submit">Buscar</Button>
+          </form>
 
-        {resultados.length > 0 && (
-          <Table
-            columns={[
-              {
-                key: 'nombre',
-                header: 'Nombre',
-                render: (row) => `${row.primerNombre} ${row.segundoNombre ?? ''}`.trim(),
-              },
-              { key: 'documento', header: 'Documento' },
-              {
-                key: 'acciones',
-                header: '',
-                render: (row) => <Button onClick={() => handleEntrada(row.id)}>Registrar entrada</Button>,
-              },
-            ]}
-            data={resultados}
-          />
-        )}
-      </Card>
+          {resultados.length > 0 && (
+            <Table
+              columns={[
+                {
+                  key: 'nombre',
+                  header: 'Nombre',
+                  render: (row) => `${row.primerNombre} ${row.segundoNombre ?? ''}`.trim(),
+                },
+                { key: 'documento', header: 'Documento' },
+                {
+                  key: 'acciones',
+                  header: '',
+                  render: (row) => (
+                    <Button onClick={() => handleEntrada(row.id)} style={{ padding: '8px 12px', fontSize: 12.5 }}>
+                      Registrar entrada
+                    </Button>
+                  ),
+                },
+              ]}
+              data={resultados}
+            />
+          )}
+        </Card>
 
-      <h2>Asistencia de hoy</h2>
-      {loading ? (
-        <p>Cargando...</p>
-      ) : (
-        <Table
-          columns={[
-            { key: 'clienteNombre', header: 'Cliente' },
-            {
-              key: 'horaEntrada',
-              header: 'Entrada',
-              render: (row) => new Date(row.horaEntrada).toLocaleTimeString('es-CO'),
-            },
-            {
-              key: 'horaSalida',
-              header: 'Salida',
-              render: (row) => (row.horaSalida ? new Date(row.horaSalida).toLocaleTimeString('es-CO') : '—'),
-            },
-            {
-              key: 'acciones',
-              header: '',
-              render: (row) =>
-                !row.horaSalida && (
-                  <Button variant="secondary" onClick={() => handleSalida(row.id)}>
-                    Registrar salida
-                  </Button>
-                ),
-            },
-          ]}
-          data={asistencias}
-          emptyMessage="Sin asistencia registrada hoy"
-        />
-      )}
+        <Card title="Registro de hoy" style={{ padding: 0, overflow: 'hidden' }}>
+          {loading ? (
+            <p style={{ padding: '0 24px 20px' }}>Cargando...</p>
+          ) : (
+            <Table
+              columns={[
+                { key: 'clienteNombre', header: 'Cliente' },
+                {
+                  key: 'horaEntrada',
+                  header: 'Entrada',
+                  render: (row) => new Date(row.horaEntrada).toLocaleTimeString('es-CO'),
+                },
+                {
+                  key: 'horaSalida',
+                  header: 'Salida',
+                  render: (row) => (row.horaSalida ? new Date(row.horaSalida).toLocaleTimeString('es-CO') : '—'),
+                },
+                {
+                  key: 'acciones',
+                  header: '',
+                  render: (row) =>
+                    !row.horaSalida && (
+                      <Button variant="secondary" onClick={() => handleSalida(row.id)} style={{ padding: '8px 12px', fontSize: 12.5 }}>
+                        Registrar salida
+                      </Button>
+                    ),
+                },
+              ]}
+              data={asistencias}
+              emptyMessage="Sin asistencia registrada hoy"
+            />
+          )}
+        </Card>
+      </div>
     </div>
   )
 }

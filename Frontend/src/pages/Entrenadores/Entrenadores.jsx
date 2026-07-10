@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Button } from '../../components/ui/Button'
+import { Card } from '../../components/ui/Card'
 import { Input } from '../../components/ui/Input'
 import { Modal } from '../../components/ui/Modal'
 import { Table } from '../../components/ui/Table'
@@ -87,38 +88,47 @@ export function Entrenadores() {
 
   return (
     <div>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 'var(--spacing-4)' }}>
-        <h1 style={{ margin: 0 }}>Entrenadores</h1>
+      <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 24 }}>
+        <div>
+          <h1 style={{ margin: '0 0 6px' }}>Entrenadores</h1>
+          <p style={{ color: 'var(--color-text-muted)', fontSize: 14.5, margin: 0 }}>Administra el personal profesional del gimnasio y sus horarios.</p>
+        </div>
         <Button onClick={abrirNuevo}>Nuevo entrenador</Button>
       </div>
 
       {loading ? (
         <p>Cargando...</p>
+      ) : entrenadores.length === 0 ? (
+        <Card style={{ padding: '60px 24px', textAlign: 'center' }}>
+          <div style={{ color: 'var(--color-text-muted)', fontSize: 14.5 }}>No hay entrenadores registrados todavía.</div>
+        </Card>
       ) : (
-        <Table
-          columns={[
-            { key: 'nombre', header: 'Nombre' },
-            { key: 'telefono', header: 'Teléfono' },
-            { key: 'especialidad', header: 'Especialidad' },
-            { key: 'horario', header: 'Horario' },
-            {
-              key: 'acciones',
-              header: '',
-              render: (row) => (
-                <div style={{ display: 'flex', gap: 8 }}>
-                  <Button variant="secondary" onClick={() => abrirEditar(row)}>
-                    Editar
-                  </Button>
-                  <Button variant="secondary" onClick={() => handleEliminar(row.id)}>
-                    Eliminar
-                  </Button>
-                </div>
-              ),
-            },
-          ]}
-          data={entrenadores}
-          emptyMessage="No hay entrenadores registrados"
-        />
+        <Card style={{ padding: 0, overflow: 'hidden' }}>
+          <Table
+            columns={[
+              { key: 'nombre', header: 'Nombre' },
+              { key: 'telefono', header: 'Teléfono' },
+              { key: 'especialidad', header: 'Especialidad' },
+              { key: 'horario', header: 'Horario' },
+              {
+                key: 'acciones',
+                header: '',
+                render: (row) => (
+                  <div style={{ display: 'flex', gap: 8 }}>
+                    <Button variant="secondary" onClick={() => abrirEditar(row)}>
+                      Editar
+                    </Button>
+                    <Button variant="secondary" onClick={() => handleEliminar(row.id)}>
+                      Eliminar
+                    </Button>
+                  </div>
+                ),
+              },
+            ]}
+            data={entrenadores}
+            emptyMessage="No hay entrenadores registrados"
+          />
+        </Card>
       )}
 
       <Modal open={modalOpen} onClose={() => setModalOpen(false)} title={editingId ? 'Editar entrenador' : 'Nuevo entrenador'}>

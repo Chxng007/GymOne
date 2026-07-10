@@ -1,26 +1,34 @@
 :root {
-  --color-bg: #0A0A0A;
-  --color-surface: #141414;
-  --color-surface-alt: #1E1E1E;
-  --color-border: #232323;
-  --color-border-input: #2A2A2A;
-  --color-border-subtle: #1A1A1A;
+  --color-bg: #0b1326;
+  --color-surface: #131b2e;
+  --color-surface-alt: #171f33;
+  --color-surface-elevated: #222a3d;
+  --color-sidebar-bg: #060e20;
+  --color-input-bg: #0e1730;
+  --color-border: #1f2940;
+  --color-border-input: #232c40;
+  --color-border-subtle: #1a2338;
 
-  --color-primary: #39FF14;
-  --color-primary-hover: #2FE010;
-  --color-accent: #3B82F6;
+  --color-primary: #89ceff;
+  --color-primary-hover: #a5dbff;
+  --color-primary-strong: #38bdf8;
+  --color-primary-on: #00344d;
+  --color-accent: #4eb8f0;
 
-  --color-success: #39FF14;
-  --color-warning: #f5b942;
-  --color-danger: #FF5C5C;
+  --color-success: #22c55e;
+  --color-warning: #f59e0b;
+  --color-danger: #ef4444;
 
-  --color-text: #F5F5F5;
-  --color-text-secondary: #c9c9c9;
-  --color-text-muted: #8a8a8a;
+  --color-text: #f5f8ff;
+  --color-text-secondary: #c3cade;
+  --color-text-muted: #7d8aa3;
 
-  --radius-sm: 8px;
+  --font-display: 'Geist', 'Inter', -apple-system, sans-serif;
+  --font-body: 'Inter', -apple-system, sans-serif;
+
+  --radius-sm: 10px;
   --radius-md: 10px;
-  --radius-lg: 12px;
+  --radius-lg: 16px;
 
   --spacing-1: 4px;
   --spacing-2: 8px;

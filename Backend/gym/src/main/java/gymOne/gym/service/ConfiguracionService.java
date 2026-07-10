@@ -34,6 +34,7 @@ public class ConfiguracionService {
         config.setImpuestoPorcentaje(request.impuestoPorcentaje() != null ? request.impuestoPorcentaje() : BigDecimal.ZERO);
         config.setHorarioApertura(request.horarioApertura());
         config.setHorarioCierre(request.horarioCierre());
+        config.setMetaIngresosMensual(request.metaIngresosMensual());
         return toResponse(configuracionRepository.save(config));
     }
 
@@ -55,6 +56,7 @@ public class ConfiguracionService {
                 config.getMoneda(),
                 config.getImpuestoPorcentaje(),
                 config.getHorarioApertura(),
-                config.getHorarioCierre());
+                config.getHorarioCierre(),
+                config.getMetaIngresosMensual());
     }
 }

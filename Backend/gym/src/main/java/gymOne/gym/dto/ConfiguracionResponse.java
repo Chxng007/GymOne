@@ -12,5 +12,6 @@ public record ConfiguracionResponse(
         String moneda,
         BigDecimal impuestoPorcentaje,
         LocalTime horarioApertura,
-        LocalTime horarioCierre) {
+        LocalTime horarioCierre,
+        BigDecimal metaIngresosMensual) {
 }

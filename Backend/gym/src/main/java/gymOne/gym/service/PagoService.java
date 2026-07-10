@@ -1,6 +1,8 @@
 package gymOne.gym.service;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Locale;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -26,16 +28,19 @@ public class PagoService {
     private final ClienteRepository clienteRepository;
     private final SuscripcionRepository suscripcionRepository;
     private final UsuarioRepository usuarioRepository;
+    private final EmailService emailService;
 
     public PagoService(
             PagoRepository pagoRepository,
             ClienteRepository clienteRepository,
             SuscripcionRepository suscripcionRepository,
-            UsuarioRepository usuarioRepository) {
+            UsuarioRepository usuarioRepository,
+            EmailService emailService) {
         this.pagoRepository = pagoRepository;
         this.clienteRepository = clienteRepository;
         this.suscripcionRepository = suscripcionRepository;
         this.usuarioRepository = usuarioRepository;
+        this.emailService = emailService;
     }
 
     public List<PagoResponse> listar(Long clienteId) {
@@ -70,6 +75,29 @@ public class PagoService {
         return toResponse(pagoRepository.save(pago));
     }
 
+    public PagoResponse notificarPago(Long id) {
+        Pago pago = pagoRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Pago no encontrado"));
+
+        Cliente cliente = pago.getCliente();
+        if (cliente.getCorreo() == null || cliente.getCorreo().isBlank()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "El cliente no tiene un correo registrado");
+        }
+
+        String monto = String.format(new Locale("es", "CO"), "$%,.0f", pago.getMonto());
+        String asunto = "Confirmación de pago - GymOne";
+        String cuerpo = "Hola " + cliente.getPrimerNombre() + ",\n\n"
+                + "Confirmamos que registramos tu pago de " + monto + " (" + pago.getTipo().name().toLowerCase(new Locale("es")) + ") "
+                + "el " + pago.getFecha() + ".\n\n"
+                + "¡Gracias por confiar en GymOne!";
+
+        emailService.enviar(cliente.getCorreo(), asunto, cuerpo);
+
+        pago.setNotificado(true);
+        pago.setNotificadoEn(LocalDateTime.now());
+        return toResponse(pagoRepository.save(pago));
+    }
+
     private PagoResponse toResponse(Pago pago) {
         return new PagoResponse(
                 pago.getId(),
@@ -81,6 +109,8 @@ public class PagoService {
                 pago.getMonto(),
                 pago.getFecha(),
                 pago.getRegistradoPor().getNombre(),
-                pago.getNota());
+                pago.getNota(),
+                pago.isNotificado(),
+                pago.getCliente().getCorreo() != null && !pago.getCliente().getCorreo().isBlank());
     }
 }

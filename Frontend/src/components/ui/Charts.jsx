@@ -1,4 +1,23 @@
 import { motion } from 'framer-motion'
+import { useEffect, useRef, useState } from 'react'
+
+function useContainerWidth(fallback) {
+  const ref = useRef(null)
+  const [width, setWidth] = useState(fallback)
+
+  useEffect(() => {
+    const el = ref.current
+    if (!el) return
+    const observer = new ResizeObserver((entries) => {
+      const w = entries[0]?.contentRect.width
+      if (w) setWidth(w)
+    })
+    observer.observe(el)
+    return () => observer.disconnect()
+  }, [])
+
+  return [ref, width]
+}
 
 function buildPath(values, width, height, padding = 4) {
   const max = Math.max(...values, 1)
@@ -35,7 +54,7 @@ export function Sparkline({ data, width = 96, height = 32, color = 'var(--color-
 }
 
 export function AreaChart({ data, height = 200, color = 'var(--color-primary)', formatValue = (v) => v }) {
-  const width = 640
+  const [containerRef, width] = useContainerWidth(640)
   const padding = 28
   const values = data.map((d) => d.value)
   const points = buildPath(values, width, height, padding)
@@ -44,7 +63,8 @@ export function AreaChart({ data, height = 200, color = 'var(--color-primary)', 
   const gradientId = 'area-gradient'
 
   return (
-    <svg width="100%" height={height} viewBox={`0 0 ${width} ${height}`} preserveAspectRatio="none" style={{ overflow: 'visible' }}>
+    <div ref={containerRef} style={{ width: '100%' }}>
+    <svg width={width} height={height} viewBox={`0 0 ${width} ${height}`} style={{ overflow: 'visible', display: 'block' }}>
       <defs>
         <linearGradient id={gradientId} x1="0" y1="0" x2="0" y2="1">
           <stop offset="0%" stopColor={color} stopOpacity="0.35" />
@@ -98,10 +118,11 @@ export function AreaChart({ data, height = 200, color = 'var(--color-primary)', 
         </motion.g>
       ))}
     </svg>
+    </div>
   )
 }
 
-export function BarChart({ data, height = 160, color = 'var(--color-primary)' }) {
+export function BarChart({ data, height = 160, color = 'var(--color-primary)', formatValue = (v) => `$${Number(v).toLocaleString('es-CO')}` }) {
   const max = Math.max(...data.map((d) => d.value), 1)
 
   return (
@@ -112,7 +133,7 @@ export function BarChart({ data, height = 160, color = 'var(--color-primary)' })
           style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', flex: 1, gap: 10, height: '100%', justifyContent: 'flex-end' }}
         >
           <span style={{ fontSize: 13, fontWeight: 700, color: 'var(--color-text)' }}>
-            ${Number(item.value).toLocaleString('es-CO')}
+            {formatValue(item.value)}
           </span>
           <div
             title={String(item.value)}
@@ -160,7 +181,7 @@ export function DonutChart({ data, size = 132, strokeWidth = 16 }) {
           strokeLinecap="round"
           strokeDasharray={`${(primaryValue / total) * circumference} ${circumference}`}
           transform={`rotate(-90 ${size / 2} ${size / 2})`}
-          style={{ filter: 'drop-shadow(0 0 8px rgba(57,255,20,0.5))', transition: 'stroke-dasharray 400ms ease' }}
+          style={{ transition: 'stroke-dasharray 400ms ease' }}
         />
         <text x={size / 2} y={size / 2 - 6} textAnchor="middle" fill="var(--color-text)" fontSize="24" fontWeight="800" fontFamily="Inter, sans-serif">
           {primaryPct}%

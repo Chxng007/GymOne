@@ -40,6 +40,9 @@ public class ConfiguracionGimnasio {
     @Column(name = "horario_cierre")
     private LocalTime horarioCierre;
 
+    @Column(name = "meta_ingresos_mensual")
+    private BigDecimal metaIngresosMensual;
+
     public Long getId() {
         return id;
     }
@@ -110,5 +113,13 @@ public class ConfiguracionGimnasio {
 
     public void setHorarioCierre(LocalTime horarioCierre) {
         this.horarioCierre = horarioCierre;
+    }
+
+    public BigDecimal getMetaIngresosMensual() {
+        return metaIngresosMensual;
+    }
+
+    public void setMetaIngresosMensual(BigDecimal metaIngresosMensual) {
+        this.metaIngresosMensual = metaIngresosMensual;
     }
 }

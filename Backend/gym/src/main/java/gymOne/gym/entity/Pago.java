@@ -51,6 +51,13 @@ public class Pago {
 
     private String nota;
 
+    @org.hibernate.annotations.ColumnDefault("false")
+    @Column(nullable = false)
+    private boolean notificado = false;
+
+    @Column(name = "notificado_en")
+    private LocalDateTime notificadoEn;
+
     public Long getId() {
         return id;
     }
@@ -121,6 +128,22 @@ public class Pago {
 
     public void setNota(String nota) {
         this.nota = nota;
+    }
+
+    public boolean isNotificado() {
+        return notificado;
+    }
+
+    public void setNotificado(boolean notificado) {
+        this.notificado = notificado;
+    }
+
+    public LocalDateTime getNotificadoEn() {
+        return notificadoEn;
+    }
+
+    public void setNotificadoEn(LocalDateTime notificadoEn) {
+        this.notificadoEn = notificadoEn;
     }
 
     public enum TipoPago {

@@ -13,5 +13,7 @@ public record PagoResponse(
         BigDecimal monto,
         LocalDateTime fecha,
         String registradoPorNombre,
-        String nota) {
+        String nota,
+        boolean notificado,
+        boolean clienteTieneCorreo) {
 }
