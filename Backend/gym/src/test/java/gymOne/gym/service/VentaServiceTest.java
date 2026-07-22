@@ -58,7 +58,7 @@ class VentaServiceTest {
         usuario.setNombre("Vendedor");
         when(usuarioRepository.findByCorreo("vendedor@gymone.local")).thenReturn(Optional.of(usuario));
         when(productoService.buscarOFallar(1L)).thenReturn(producto);
-        when(ventaRepository.save(any())).thenAnswer(invocation -> {
+        when(ventaRepository.saveAndFlush(any())).thenAnswer(invocation -> {
             Venta venta = invocation.getArgument(0);
             venta.setId(10L);
             return venta;

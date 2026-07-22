@@ -16,7 +16,7 @@ planes para ejecutar uno.
 | 002 | [Externalizar secretos y arreglar el datasource](002-externalizar-secretos-y-datasource.md) | P1 | S | — | HECHO |
 | 003 | [Autorización por roles](003-autorizacion-por-roles.md) | P1 | M | 001 | HECHO (fuera del alcance original: `GlobalExceptionHandler.java` necesitó un handler para `AccessDeniedException` → 403, si no `@PreAuthorize` devolvía 500; prueba manual paso 7 no realizada — sin navegador en este entorno) |
 | 004 | [Integrar caja con el flujo de dinero](004-integracion-caja-flujo-dinero.md) | P1 | M | 001 | HECHO (E2E verificado contra Postgres desechable, no contra el volumen dev real que ya tenía datos) |
-| 005 | [Guardas de concurrencia en stock y caja](005-guardas-de-concurrencia.md) | P1 | S | 001 | TODO |
+| 005 | [Guardas de concurrencia en stock y caja](005-guardas-de-concurrencia.md) | P1 | S | 001 | HECHO (Paso 4 omitido a propósito: `DataIntegrityViolationException` ya mapea a 409 en `GlobalExceptionHandler` desde antes, no hizo falta catch local en `CajaService.abrir`; verificado con 3 ejecuciones consecutivas de las pruebas de concurrencia, sin comprobar duplicados en `caja_sesiones` del dato real: 0 filas) |
 | 006 | [Interceptor 401 en el frontend](006-interceptor-401-frontend.md) | P2 | S | — | HECHO (lint/build OK; prueba manual en navegador no realizada — sin herramienta de navegador en este entorno) |
 
 Valores de estado: TODO | EN CURSO | HECHO | BLOQUEADO (con una línea de motivo) |

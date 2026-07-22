@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
@@ -77,7 +78,13 @@ public class VentaService {
 
         venta.setTotal(subtotalGeneral.subtract(venta.getDescuento()));
 
-        Venta ventaGuardada = ventaRepository.save(venta);
+        Venta ventaGuardada;
+        try {
+            ventaGuardada = ventaRepository.saveAndFlush(venta);
+        } catch (ObjectOptimisticLockingFailureException ex) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT,
+                    "El stock cambió mientras se registraba la venta. Vuelve a intentarlo.");
+        }
 
         if (ventaGuardada.getMetodoPago() == Venta.MetodoPago.EFECTIVO) {
             cajaService.registrarMovimientoAutomatico(
