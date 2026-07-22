@@ -3,6 +3,8 @@ package gymOne.gym.service;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
@@ -114,5 +116,35 @@ class CajaServiceTest {
                 .isInstanceOf(ResponseStatusException.class)
                 .satisfies(ex -> assertThat(((ResponseStatusException) ex).getStatusCode())
                         .isEqualTo(org.springframework.http.HttpStatus.CONFLICT));
+    }
+
+    @Test
+    void movimientoAutomaticoSinCajaAbiertaNoLanzaExcepcion() {
+        cajaService = new CajaService(cajaSesionRepository, cajaMovimientoRepository, usuarioRepository);
+
+        when(cajaSesionRepository.findByFechaAndEstado(any(), any())).thenReturn(java.util.Optional.empty());
+
+        cajaService.registrarMovimientoAutomatico(
+                CajaMovimiento.TipoMovimiento.INGRESO, "Venta #1", new BigDecimal("100"), null);
+
+        verify(cajaMovimientoRepository, never()).save(any());
+    }
+
+    @Test
+    void movimientoAutomaticoConCajaAbiertaGuardaElMovimiento() {
+        cajaService = new CajaService(cajaSesionRepository, cajaMovimientoRepository, usuarioRepository);
+
+        CajaSesion sesion = nuevaSesion(new BigDecimal("100"), CajaSesion.EstadoCaja.ABIERTA);
+        when(cajaSesionRepository.findByFechaAndEstado(any(), any())).thenReturn(java.util.Optional.of(sesion));
+
+        cajaService.registrarMovimientoAutomatico(
+                CajaMovimiento.TipoMovimiento.INGRESO, "Venta #1", new BigDecimal("100"), null);
+
+        org.mockito.ArgumentCaptor<CajaMovimiento> captor = org.mockito.ArgumentCaptor.forClass(CajaMovimiento.class);
+        verify(cajaMovimientoRepository).save(captor.capture());
+
+        assertThat(captor.getValue().getTipo()).isEqualTo(CajaMovimiento.TipoMovimiento.INGRESO);
+        assertThat(captor.getValue().getMonto().compareTo(new BigDecimal("100"))).isZero();
+        assertThat(captor.getValue().getCajaSesion()).isEqualTo(sesion);
     }
 }

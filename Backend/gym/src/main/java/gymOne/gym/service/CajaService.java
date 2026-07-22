@@ -4,6 +4,8 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,6 +16,7 @@ import gymOne.gym.dto.CajaMovimientoResponse;
 import gymOne.gym.dto.CajaSesionResponse;
 import gymOne.gym.entity.CajaMovimiento;
 import gymOne.gym.entity.CajaSesion;
+import gymOne.gym.entity.Pago;
 import gymOne.gym.entity.Usuario;
 import gymOne.gym.repository.CajaMovimientoRepository;
 import gymOne.gym.repository.CajaSesionRepository;
@@ -22,6 +25,8 @@ import gymOne.gym.repository.UsuarioRepository;
 @Service
 @Transactional
 public class CajaService {
+
+    private static final Logger log = LoggerFactory.getLogger(CajaService.class);
 
     private final CajaSesionRepository cajaSesionRepository;
     private final CajaMovimientoRepository cajaMovimientoRepository;
@@ -67,6 +72,25 @@ public class CajaService {
         return cajaSesionRepository.findTopByFechaOrderByHoraAperturaDesc(LocalDate.now())
                 .map(this::toResponse)
                 .orElse(null);
+    }
+
+    public void registrarMovimientoAutomatico(CajaMovimiento.TipoMovimiento tipo, String concepto, BigDecimal monto, Pago referenciaPago) {
+        CajaSesion sesion = cajaSesionRepository.findByFechaAndEstado(LocalDate.now(), CajaSesion.EstadoCaja.ABIERTA)
+                .orElse(null);
+
+        if (sesion == null) {
+            log.warn("No hay caja abierta; no se registró el movimiento automático: {}", concepto);
+            return;
+        }
+
+        CajaMovimiento movimiento = new CajaMovimiento();
+        movimiento.setCajaSesion(sesion);
+        movimiento.setTipo(tipo);
+        movimiento.setConcepto(concepto);
+        movimiento.setMonto(monto);
+        movimiento.setReferenciaPago(referenciaPago);
+
+        cajaMovimientoRepository.save(movimiento);
     }
 
     public CajaMovimientoResponse registrarMovimiento(Long sesionId, CajaMovimientoRequest request) {
