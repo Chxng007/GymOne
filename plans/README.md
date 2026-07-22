@@ -17,7 +17,7 @@ planes para ejecutar uno.
 | 003 | [Autorización por roles](003-autorizacion-por-roles.md) | P1 | M | 001 | TODO |
 | 004 | [Integrar caja con el flujo de dinero](004-integracion-caja-flujo-dinero.md) | P1 | M | 001 | TODO |
 | 005 | [Guardas de concurrencia en stock y caja](005-guardas-de-concurrencia.md) | P1 | S | 001 | TODO |
-| 006 | [Interceptor 401 en el frontend](006-interceptor-401-frontend.md) | P2 | S | — | TODO |
+| 006 | [Interceptor 401 en el frontend](006-interceptor-401-frontend.md) | P2 | S | — | HECHO (lint/build OK; prueba manual en navegador no realizada — sin herramienta de navegador en este entorno) |
 
 Valores de estado: TODO | EN CURSO | HECHO | BLOQUEADO (con una línea de motivo) |
 RECHAZADO (con una línea de justificación).
