@@ -14,7 +14,7 @@ planes para ejecutar uno.
 |------|--------|-----------|----------|------------|--------|
 | 001 | [Base de verificación del backend](001-base-de-verificacion.md) | P1 | M | — | HECHO |
 | 002 | [Externalizar secretos y arreglar el datasource](002-externalizar-secretos-y-datasource.md) | P1 | S | — | HECHO |
-| 003 | [Autorización por roles](003-autorizacion-por-roles.md) | P1 | M | 001 | TODO |
+| 003 | [Autorización por roles](003-autorizacion-por-roles.md) | P1 | M | 001 | HECHO (fuera del alcance original: `GlobalExceptionHandler.java` necesitó un handler para `AccessDeniedException` → 403, si no `@PreAuthorize` devolvía 500; prueba manual paso 7 no realizada — sin navegador en este entorno) |
 | 004 | [Integrar caja con el flujo de dinero](004-integracion-caja-flujo-dinero.md) | P1 | M | 001 | TODO |
 | 005 | [Guardas de concurrencia en stock y caja](005-guardas-de-concurrencia.md) | P1 | S | 001 | TODO |
 | 006 | [Interceptor 401 en el frontend](006-interceptor-401-frontend.md) | P2 | S | — | HECHO (lint/build OK; prueba manual en navegador no realizada — sin herramienta de navegador en este entorno) |

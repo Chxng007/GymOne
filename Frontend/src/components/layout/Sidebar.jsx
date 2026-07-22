@@ -16,19 +16,24 @@ const ICONS = {
   configuracion: 'M12 12m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0 M12 4v2 M12 18v2 M4 12h2 M18 12h2 M6.3 6.3l1.4 1.4 M16.3 16.3l1.4 1.4 M6.3 17.7l1.4-1.4 M16.3 7.7l1.4-1.4',
 }
 
+const ROLES_ADMIN = ['ADMINISTRADOR']
+const ROLES_ADMIN_RECEPCION = ['ADMINISTRADOR', 'RECEPCIONISTA']
+
 const NAV_ITEMS = [
   { to: '/dashboard', label: 'Dashboard', icon: 'dashboard' },
   { to: '/clientes', label: 'Clientes', icon: 'clientes' },
   { to: '/membresias', label: 'Membresías', icon: 'membresias' },
-  { to: '/pagos', label: 'Pagos', icon: 'pagos' },
-  { to: '/caja', label: 'Caja', icon: 'caja' },
+  { to: '/pagos', label: 'Pagos', icon: 'pagos', roles: ROLES_ADMIN_RECEPCION },
+  { to: '/caja', label: 'Caja', icon: 'caja', roles: ROLES_ADMIN_RECEPCION },
   { to: '/asistencia', label: 'Asistencia', icon: 'asistencia' },
   { to: '/inventario', label: 'Inventario', icon: 'inventario' },
-  { to: '/ventas', label: 'Ventas', icon: 'ventas' },
-  { to: '/gastos', label: 'Gastos', icon: 'gastos' },
+  { to: '/ventas', label: 'Ventas', icon: 'ventas', roles: ROLES_ADMIN_RECEPCION },
+  { to: '/gastos', label: 'Gastos', icon: 'gastos', roles: ROLES_ADMIN },
   { to: '/entrenadores', label: 'Entrenadores', icon: 'entrenadores' },
-  { to: '/reportes', label: 'Reportes', icon: 'reportes' },
+  { to: '/reportes', label: 'Reportes', icon: 'reportes', roles: ROLES_ADMIN_RECEPCION },
 ]
+
+const CONFIGURACION_ITEM = { to: '/configuracion', label: 'Configuración', icon: 'configuracion', roles: ROLES_ADMIN }
 
 function initialsOf(name = '') {
   return name
@@ -64,6 +69,8 @@ function navItemStyle(isActive) {
 
 export function Sidebar() {
   const { user } = useAuth()
+  const navItems = NAV_ITEMS.filter((item) => !item.roles || item.roles.includes(user?.rol))
+  const mostrarConfiguracion = !CONFIGURACION_ITEM.roles || CONFIGURACION_ITEM.roles.includes(user?.rol)
 
   return (
     <aside
@@ -103,7 +110,7 @@ export function Sidebar() {
       </div>
 
       <nav style={{ display: 'flex', flexDirection: 'column', gap: 2, padding: '0 12px', flex: 1 }}>
-        {NAV_ITEMS.map((item) => (
+        {navItems.map((item) => (
           <NavLink key={item.to} to={item.to} className="ui-nav-item" style={({ isActive }) => navItemStyle(isActive)}>
             {({ isActive }) => (
               <>
@@ -114,15 +121,16 @@ export function Sidebar() {
           </NavLink>
         ))}
 
-        <div style={{ color: '#5c6680', fontSize: 11, fontWeight: 700, letterSpacing: '0.08em', padding: '18px 12px 8px' }}>ADMIN</div>
-        <NavLink to="/configuracion" className="ui-nav-item" style={({ isActive }) => navItemStyle(isActive)}>
-          {({ isActive }) => (
-            <>
-              <NavIcon d={ICONS.configuracion} color={isActive ? 'var(--color-accent)' : '#8390ac'} />
-              Configuración
-            </>
-          )}
-        </NavLink>
+        {mostrarConfiguracion && (
+          <NavLink to={CONFIGURACION_ITEM.to} className="ui-nav-item" style={({ isActive }) => navItemStyle(isActive)}>
+            {({ isActive }) => (
+              <>
+                <NavIcon d={ICONS.configuracion} color={isActive ? 'var(--color-accent)' : '#8390ac'} />
+                {CONFIGURACION_ITEM.label}
+              </>
+            )}
+          </NavLink>
+        )}
       </nav>
 
       <div

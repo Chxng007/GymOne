@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -21,6 +22,7 @@ import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/caja")
+@PreAuthorize("hasAnyRole('ADMINISTRADOR','RECEPCIONISTA')")
 public class CajaController {
 
     private final CajaService cajaService;
@@ -52,6 +54,7 @@ public class CajaController {
     }
 
     @PostMapping("/{id}/cerrar")
+    @PreAuthorize("hasRole('ADMINISTRADOR')")
     public CajaSesionResponse cerrar(@PathVariable Long id) {
         return cajaService.cerrar(id);
     }

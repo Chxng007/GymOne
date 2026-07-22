@@ -49,15 +49,21 @@ export function AppRoutes() {
             <Route path="/clientes/nuevo" element={<ClienteForm />} />
             <Route path="/clientes/:id" element={<ClienteForm />} />
             <Route path="/membresias" element={<Membresias />} />
-            <Route path="/pagos" element={<Pagos />} />
-            <Route path="/caja" element={<Caja />} />
             <Route path="/asistencia" element={<Asistencia />} />
             <Route path="/inventario" element={<Inventario />} />
-            <Route path="/ventas" element={<Ventas />} />
-            <Route path="/gastos" element={<Gastos />} />
             <Route path="/entrenadores" element={<Entrenadores />} />
-            <Route path="/reportes" element={<Reportes />} />
-            <Route path="/configuracion" element={<Configuracion />} />
+
+            <Route element={<PrivateRoute allowedRoles={['ADMINISTRADOR']} />}>
+              <Route path="/configuracion" element={<Configuracion />} />
+              <Route path="/gastos" element={<Gastos />} />
+            </Route>
+
+            <Route element={<PrivateRoute allowedRoles={['ADMINISTRADOR', 'RECEPCIONISTA']} />}>
+              <Route path="/caja" element={<Caja />} />
+              <Route path="/pagos" element={<Pagos />} />
+              <Route path="/ventas" element={<Ventas />} />
+              <Route path="/reportes" element={<Reportes />} />
+            </Route>
           </Route>
         </Route>
 

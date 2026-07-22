@@ -1,5 +1,6 @@
 package gymOne.gym.controller;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -27,6 +28,7 @@ public class ConfiguracionController {
     }
 
     @PutMapping
+    @PreAuthorize("hasRole('ADMINISTRADOR')")
     public ConfiguracionResponse actualizar(@Valid @RequestBody ConfiguracionRequest request) {
         return configuracionService.actualizar(request);
     }
