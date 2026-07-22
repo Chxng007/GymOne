@@ -13,7 +13,7 @@ planes para ejecutar uno.
 | Plan | Título | Prioridad | Esfuerzo | Depende de | Estado |
 |------|--------|-----------|----------|------------|--------|
 | 001 | [Base de verificación del backend](001-base-de-verificacion.md) | P1 | M | — | HECHO |
-| 002 | [Externalizar secretos y arreglar el datasource](002-externalizar-secretos-y-datasource.md) | P1 | S | — | TODO |
+| 002 | [Externalizar secretos y arreglar el datasource](002-externalizar-secretos-y-datasource.md) | P1 | S | — | HECHO |
 | 003 | [Autorización por roles](003-autorizacion-por-roles.md) | P1 | M | 001 | TODO |
 | 004 | [Integrar caja con el flujo de dinero](004-integracion-caja-flujo-dinero.md) | P1 | M | 001 | TODO |
 | 005 | [Guardas de concurrencia en stock y caja](005-guardas-de-concurrencia.md) | P1 | S | 001 | TODO |

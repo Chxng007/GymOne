@@ -44,10 +44,9 @@ public class DataSeeder implements CommandLineRunner {
         usuarioRepository.save(admin);
 
         log.info("========================================================");
-        log.info(" Usuario administrador creado (Fase 1 - seed inicial)");
-        log.info(" Correo:      {}", defaultAdminEmail);
-        log.info(" Contrasena:  {}", defaultAdminPassword);
-        log.info(" Cambia esta contrasena una vez tengas login funcionando.");
+        log.info(" Usuario administrador creado (seed inicial)");
+        log.info(" Correo: {}", defaultAdminEmail);
+        log.info(" Contrasena: la del entorno (ADMIN_PASSWORD). Cambiala tras el primer login.");
         log.info("========================================================");
     }
 }
