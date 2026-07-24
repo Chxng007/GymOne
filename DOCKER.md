@@ -45,7 +45,7 @@ Es fácil mezclarlas porque las tres viven en el mismo `.env`, pero son cosas se
 
 | Para qué sirve | Variables en `.env` | Dónde se usa |
 |---|---|---|
-| Iniciar sesión en la app | `APP_ADMIN_DEFAULT_EMAIL` / `APP_ADMIN_DEFAULT_PASSWORD` | Formulario de login en http://localhost:5173 |
+| Iniciar sesión en la app | `ADMIN_EMAIL` / `ADMIN_PASSWORD` | Formulario de login en http://localhost:5173 |
 | Iniciar sesión en pgAdmin | `PGADMIN_DEFAULT_EMAIL` / `PGADMIN_DEFAULT_PASSWORD` | Pantalla de login de http://localhost:5050 |
 | Conectar pgAdmin a la base de datos | `POSTGRES_USER` / `POSTGRES_PASSWORD` | Al registrar el servidor **dentro** de pgAdmin (no es el login de pgAdmin) |
 
@@ -71,7 +71,9 @@ Si en vez de eso preferís registrarlo a mano (o cambiaste `POSTGRES_DB`/`POSTGR
 
 ## Sobre el usuario administrador de la app
 
-El usuario admin se crea una única vez, cuando el backend arranca contra una base de datos vacía (`DataSeeder.java`). Si más adelante cambiás `APP_ADMIN_DEFAULT_EMAIL` / `APP_ADMIN_DEFAULT_PASSWORD` en `.env`, el cambio **no** se aplica solo, porque el seeder solo corre si la tabla `usuarios` está vacía.
+El usuario admin se crea una única vez, cuando el backend arranca contra una base de datos vacía (`DataSeeder.java`). Si más adelante cambiás `ADMIN_EMAIL` / `ADMIN_PASSWORD` en `.env`, el cambio **no** se aplica solo, porque el seeder solo corre si la tabla `usuarios` está vacía.
+
+`JWT_SECRET` y `ADMIN_PASSWORD` son obligatorios para el backend (no tienen valor por defecto en `application.properties` por seguridad) — el `docker-compose.yml` raíz sí les da un valor de desarrollo si no están en tu `.env`, pero en un despliegue real hay que definirlos explícitamente.
 
 Para resetear el usuario admin (¡esto borra todos los datos!):
 

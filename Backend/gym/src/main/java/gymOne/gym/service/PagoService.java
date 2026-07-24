@@ -11,6 +11,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import gymOne.gym.dto.PagoRequest;
 import gymOne.gym.dto.PagoResponse;
+import gymOne.gym.entity.CajaMovimiento;
 import gymOne.gym.entity.Cliente;
 import gymOne.gym.entity.Pago;
 import gymOne.gym.entity.Suscripcion;
@@ -29,18 +30,21 @@ public class PagoService {
     private final SuscripcionRepository suscripcionRepository;
     private final UsuarioRepository usuarioRepository;
     private final EmailService emailService;
+    private final CajaService cajaService;
 
     public PagoService(
             PagoRepository pagoRepository,
             ClienteRepository clienteRepository,
             SuscripcionRepository suscripcionRepository,
             UsuarioRepository usuarioRepository,
-            EmailService emailService) {
+            EmailService emailService,
+            CajaService cajaService) {
         this.pagoRepository = pagoRepository;
         this.clienteRepository = clienteRepository;
         this.suscripcionRepository = suscripcionRepository;
         this.usuarioRepository = usuarioRepository;
         this.emailService = emailService;
+        this.cajaService = cajaService;
     }
 
     public List<PagoResponse> listar(Long clienteId) {
@@ -72,7 +76,17 @@ public class PagoService {
         pago.setNota(request.nota());
         pago.setRegistradoPor(registradoPor);
 
-        return toResponse(pagoRepository.save(pago));
+        Pago pagoGuardado = pagoRepository.save(pago);
+
+        if (pagoGuardado.getMetodo() == Pago.MetodoPago.EFECTIVO) {
+            cajaService.registrarMovimientoAutomatico(
+                    CajaMovimiento.TipoMovimiento.INGRESO,
+                    "Pago #" + pagoGuardado.getId() + " - " + cliente.getPrimerNombre(),
+                    pagoGuardado.getMonto(),
+                    pagoGuardado);
+        }
+
+        return toResponse(pagoGuardado);
     }
 
     public PagoResponse notificarPago(Long id) {

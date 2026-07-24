@@ -9,6 +9,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import gymOne.gym.dto.GastoRequest;
 import gymOne.gym.dto.GastoResponse;
+import gymOne.gym.entity.CajaMovimiento;
 import gymOne.gym.entity.Gasto;
 import gymOne.gym.repository.GastoRepository;
 
@@ -17,9 +18,11 @@ import gymOne.gym.repository.GastoRepository;
 public class GastoService {
 
     private final GastoRepository gastoRepository;
+    private final CajaService cajaService;
 
-    public GastoService(GastoRepository gastoRepository) {
+    public GastoService(GastoRepository gastoRepository, CajaService cajaService) {
         this.gastoRepository = gastoRepository;
+        this.cajaService = cajaService;
     }
 
     public List<GastoResponse> listar() {
@@ -29,7 +32,15 @@ public class GastoService {
     public GastoResponse crear(GastoRequest request) {
         Gasto gasto = new Gasto();
         aplicar(gasto, request);
-        return toResponse(gastoRepository.save(gasto));
+        Gasto gastoGuardado = gastoRepository.save(gasto);
+
+        cajaService.registrarMovimientoAutomatico(
+                CajaMovimiento.TipoMovimiento.EGRESO,
+                "Gasto #" + gastoGuardado.getId() + " - " + gastoGuardado.getDescripcion(),
+                gastoGuardado.getMonto(),
+                null);
+
+        return toResponse(gastoGuardado);
     }
 
     public GastoResponse actualizar(Long id, GastoRequest request) {

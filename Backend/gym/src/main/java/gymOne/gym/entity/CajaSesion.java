@@ -15,9 +15,12 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 
 @Entity
-@Table(name = "caja_sesiones")
+@Table(name = "caja_sesiones", uniqueConstraints = {
+        @UniqueConstraint(name = "uk_caja_sesiones_fecha", columnNames = "fecha")
+})
 public class CajaSesion {
 
     @Id

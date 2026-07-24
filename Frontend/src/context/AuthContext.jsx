@@ -3,8 +3,8 @@ import { login as loginRequest } from '../services/authService'
 
 const AuthContext = createContext(null)
 
-const TOKEN_KEY = 'gymone_token'
-const USER_KEY = 'gymone_user'
+export const TOKEN_KEY = 'gymone_token'
+export const USER_KEY = 'gymone_user'
 
 export function AuthProvider({ children }) {
   const [token, setToken] = useState(() => localStorage.getItem(TOKEN_KEY) ?? sessionStorage.getItem(TOKEN_KEY))
