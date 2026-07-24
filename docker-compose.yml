@@ -1,0 +1,89 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: gymone-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-gymone_db}
+      POSTGRES_USER: ${POSTGRES_USER:-gymone}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-gymone}
+    ports:
+      - "${POSTGRES_PORT:-5434}:5432"
+    volumes:
+      - gymone_postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-gymone} -d ${POSTGRES_DB:-gymone_db}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    networks:
+      - gymone-network
+
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: gymone-pgadmin
+    restart: unless-stopped
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-admin@gymone.com}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:-admin123}
+    ports:
+      - "${PGADMIN_PORT:-5050}:80"
+    volumes:
+      - gymone_pgadmin_data:/var/lib/pgadmin
+      - ./pgadmin/servers.json:/pgadmin4/servers.json:ro
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - gymone-network
+
+  backend:
+    build:
+      context: ./Backend/gym
+      dockerfile: Dockerfile
+    container_name: gymone-backend
+    restart: unless-stopped
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/${POSTGRES_DB:-gymone_db}
+      SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER:-gymone}
+      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD:-gymone}
+      APP_CORS_ALLOWED_ORIGIN: ${APP_CORS_ALLOWED_ORIGIN:-http://localhost:5173}
+      JWT_SECRET: ${JWT_SECRET:-Y2hhbmdlLXRoaXMtc2VjcmV0LWtleS1mb3ItZ3ltb25lLWp3dC1zaWduaW5nLTEyMzQ1Ng==}
+      JWT_EXPIRATION_MS: ${JWT_EXPIRATION_MS:-86400000}
+      APP_ADMIN_DEFAULT_EMAIL: ${APP_ADMIN_DEFAULT_EMAIL:-admin@gymone.com}
+      APP_ADMIN_DEFAULT_PASSWORD: ${APP_ADMIN_DEFAULT_PASSWORD:-Admin123!}
+      MAIL_HOST: ${MAIL_HOST:-smtp.gmail.com}
+      MAIL_PORT: ${MAIL_PORT:-587}
+      MAIL_USERNAME: ${MAIL_USERNAME:-}
+      MAIL_PASSWORD: ${MAIL_PASSWORD:-}
+      GEMINI_API_KEY: ${GEMINI_API_KEY:-}
+    ports:
+      - "${BACKEND_PORT:-8080}:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - gymone-network
+
+  frontend:
+    build:
+      context: ./Frontend
+      dockerfile: Dockerfile
+      args:
+        VITE_API_URL: ${VITE_API_URL:-http://localhost:8080/api}
+    container_name: gymone-frontend
+    restart: unless-stopped
+    ports:
+      - "${FRONTEND_PORT:-5173}:80"
+    depends_on:
+      - backend
+    networks:
+      - gymone-network
+
+networks:
+  gymone-network:
+    driver: bridge
+
+volumes:
+  gymone_postgres_data:
+  gymone_pgadmin_data:
