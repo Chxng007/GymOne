@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
@@ -12,6 +13,7 @@ import gymOne.gym.dto.VentaItemRequest;
 import gymOne.gym.dto.VentaItemResponse;
 import gymOne.gym.dto.VentaRequest;
 import gymOne.gym.dto.VentaResponse;
+import gymOne.gym.entity.CajaMovimiento;
 import gymOne.gym.entity.Producto;
 import gymOne.gym.entity.Usuario;
 import gymOne.gym.entity.Venta;
@@ -26,11 +28,17 @@ public class VentaService {
     private final VentaRepository ventaRepository;
     private final ProductoService productoService;
     private final UsuarioRepository usuarioRepository;
+    private final CajaService cajaService;
 
-    public VentaService(VentaRepository ventaRepository, ProductoService productoService, UsuarioRepository usuarioRepository) {
+    public VentaService(
+            VentaRepository ventaRepository,
+            ProductoService productoService,
+            UsuarioRepository usuarioRepository,
+            CajaService cajaService) {
         this.ventaRepository = ventaRepository;
         this.productoService = productoService;
         this.usuarioRepository = usuarioRepository;
+        this.cajaService = cajaService;
     }
 
     public List<VentaResponse> listar() {
@@ -70,7 +78,23 @@ public class VentaService {
 
         venta.setTotal(subtotalGeneral.subtract(venta.getDescuento()));
 
-        return toResponse(ventaRepository.save(venta));
+        Venta ventaGuardada;
+        try {
+            ventaGuardada = ventaRepository.saveAndFlush(venta);
+        } catch (ObjectOptimisticLockingFailureException ex) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT,
+                    "El stock cambió mientras se registraba la venta. Vuelve a intentarlo.");
+        }
+
+        if (ventaGuardada.getMetodoPago() == Venta.MetodoPago.EFECTIVO) {
+            cajaService.registrarMovimientoAutomatico(
+                    CajaMovimiento.TipoMovimiento.INGRESO,
+                    "Venta #" + ventaGuardada.getId(),
+                    ventaGuardada.getTotal(),
+                    null);
+        }
+
+        return toResponse(ventaGuardada);
     }
 
     private VentaResponse toResponse(Venta venta) {

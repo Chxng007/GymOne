@@ -1,6 +1,6 @@
 import { AnimatePresence, motion } from 'framer-motion'
 import { useEffect, useRef, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import { Button } from '../../components/ui/Button'
 import { useAuth } from '../../context/AuthContext'
 import { useToast } from '../../context/ToastContext'
@@ -136,13 +136,16 @@ export function Login() {
   const { showToast } = useToast()
   const { cover, reveal } = useTransition()
   const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
   const isDesktop = useIsDesktop()
   const buttonRef = useRef(null)
   const [correo, setCorreo] = useState('')
   const [contrasena, setContrasena] = useState('')
   const [remember, setRemember] = useState(true)
   const [showPassword, setShowPassword] = useState(false)
-  const [error, setError] = useState('')
+  const [error, setError] = useState(() =>
+    searchParams.get('sesion') === 'expirada' ? 'Tu sesión expiró. Vuelve a iniciar sesión.' : '',
+  )
   const [loading, setLoading] = useState(false)
 
   async function handleSubmit(e) {

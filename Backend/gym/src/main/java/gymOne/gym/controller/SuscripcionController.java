@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -33,16 +34,19 @@ public class SuscripcionController {
     }
 
     @PostMapping
+    @PreAuthorize("hasAnyRole('ADMINISTRADOR','RECEPCIONISTA')")
     public ResponseEntity<SuscripcionResponse> crear(@Valid @RequestBody SuscripcionRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED).body(suscripcionService.crear(request));
     }
 
     @PostMapping("/{id}/congelar")
+    @PreAuthorize("hasAnyRole('ADMINISTRADOR','RECEPCIONISTA')")
     public SuscripcionResponse congelar(@PathVariable Long id) {
         return suscripcionService.congelar(id);
     }
 
     @PostMapping("/{id}/renovar")
+    @PreAuthorize("hasAnyRole('ADMINISTRADOR','RECEPCIONISTA')")
     public SuscripcionResponse renovar(@PathVariable Long id) {
         return suscripcionService.renovar(id);
     }
