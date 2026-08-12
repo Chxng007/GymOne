@@ -2,6 +2,7 @@ import { AnimatePresence, motion } from 'framer-motion'
 import { useEffect, useRef, useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { Button } from '../../components/ui/Button'
+import { LogoMark } from '../../components/ui/LogoMark'
 import { useAuth } from '../../context/AuthContext'
 import { useToast } from '../../context/ToastContext'
 import { useTransition } from '../../context/TransitionContext'
@@ -63,27 +64,6 @@ function useIsDesktop(breakpoint = 900) {
   }, [breakpoint])
 
   return isDesktop
-}
-
-function LogoMark({ size = 34 }) {
-  return (
-    <motion.div
-      animate={{ boxShadow: ['0 0 16px rgba(56,189,248,0.45)', '0 0 28px rgba(56,189,248,0.7)', '0 0 16px rgba(56,189,248,0.45)'] }}
-      transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
-      style={{
-        width: size,
-        height: size,
-        borderRadius: size * 0.27,
-        background: 'linear-gradient(135deg, #38bdf8, #0ea5e9)',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        flexShrink: 0,
-      }}
-    >
-      <div style={{ width: size * 0.35, height: size * 0.35, background: 'var(--color-bg)', borderRadius: 3, transform: 'rotate(45deg)' }} />
-    </motion.div>
-  )
 }
 
 function GlowOrb({ size, top, left, delay }) {

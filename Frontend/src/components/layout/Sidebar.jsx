@@ -1,5 +1,6 @@
 import { NavLink } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext'
+import { LogoMark } from '../ui/LogoMark'
 
 const ICONS = {
   dashboard: 'M4 4h7v7H4z M13 4h7v7h-7z M4 13h7v7H4z M13 13h7v7h-7z',
@@ -85,22 +86,7 @@ export function Sidebar() {
       }}
     >
       <div style={{ display: 'flex', alignItems: 'center', gap: 11, padding: '0 22px', marginBottom: 28 }}>
-        <div
-          style={{
-            width: 36,
-            height: 36,
-            borderRadius: 10,
-            background: 'linear-gradient(135deg, #38bdf8, #0ea5e9)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            flexShrink: 0,
-          }}
-        >
-          <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#00243a" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M6 18L18 6M6 6h6M6 6v6M18 18h-6M18 18v-6" />
-          </svg>
-        </div>
+        <LogoMark size={36} animated={false} />
         <div>
           <div style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: 18, letterSpacing: '-0.01em', color: 'var(--color-text)', lineHeight: 1.15 }}>
             GymOne

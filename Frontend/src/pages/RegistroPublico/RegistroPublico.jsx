@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Button } from '../../components/ui/Button'
 import { Card } from '../../components/ui/Card'
 import { Input } from '../../components/ui/Input'
+import { LogoMark } from '../../components/ui/LogoMark'
 import { useToast } from '../../context/ToastContext'
 import { registrarClientePublico } from '../../services/registroPublicoService'
 
@@ -64,22 +65,7 @@ export function RegistroPublico() {
     >
       <div style={{ width: '100%', maxWidth: 640 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 11, marginBottom: 28, justifyContent: 'center' }}>
-          <div
-            style={{
-              width: 36,
-              height: 36,
-              borderRadius: 10,
-              background: 'linear-gradient(135deg, #38bdf8, #0ea5e9)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              flexShrink: 0,
-            }}
-          >
-            <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#00243a" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M6 18L18 6M6 6h6M6 6v6M18 18h-6M18 18v-6" />
-            </svg>
-          </div>
+          <LogoMark size={36} />
           <span style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: 20, color: 'var(--color-text)' }}>GymOne</span>
         </div>
 
