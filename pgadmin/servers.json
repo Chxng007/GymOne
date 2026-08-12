@@ -1,0 +1,13 @@
+{
+  "Servers": {
+    "1": {
+      "Name": "GymOne (Docker)",
+      "Group": "Servers",
+      "Host": "postgres",
+      "Port": 5432,
+      "MaintenanceDB": "gymone_db",
+      "Username": "gymone",
+      "SSLMode": "prefer"
+    }
+  }
+}
