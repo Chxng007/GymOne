@@ -101,6 +101,12 @@ function fieldStyle(hasIcon) {
   }
 }
 
+// Acceso de demostración. El botón solo aparece si ambas variables están
+// definidas, así que en un despliegue real basta con no declararlas.
+const DEMO_EMAIL = import.meta.env.VITE_DEMO_EMAIL
+const DEMO_PASSWORD = import.meta.env.VITE_DEMO_PASSWORD
+const DEMO_ENABLED = Boolean(DEMO_EMAIL && DEMO_PASSWORD)
+
 const container = {
   hidden: {},
   show: { transition: { staggerChildren: 0.07, delayChildren: 0.1 } },
@@ -128,12 +134,11 @@ export function Login() {
   )
   const [loading, setLoading] = useState(false)
 
-  async function handleSubmit(e) {
-    e.preventDefault()
+  async function entrar(email, password, recordar) {
     setError('')
     setLoading(true)
     try {
-      await login(correo, contrasena, remember)
+      await login(email, password, recordar)
       const rect = buttonRef.current?.getBoundingClientRect()
       const origin = rect
         ? { x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 }
@@ -145,6 +150,15 @@ export function Login() {
       setError('Correo o contraseña inválidos')
       setLoading(false)
     }
+  }
+
+  async function handleSubmit(e) {
+    e.preventDefault()
+    await entrar(correo, contrasena, remember)
+  }
+
+  async function handleDemo() {
+    await entrar(DEMO_EMAIL, DEMO_PASSWORD, false)
   }
 
   function handleOlvidasteContrasena(e) {
@@ -387,6 +401,23 @@ export function Login() {
               {loading ? 'Ingresando...' : 'Iniciar sesión'}
             </Button>
           </motion.div>
+
+          {DEMO_ENABLED && (
+            <motion.div variants={item} whileHover={{ scale: 1.015 }} whileTap={{ scale: 0.985 }} style={{ marginTop: 12 }}>
+              <Button
+                type="button"
+                variant="secondary"
+                onClick={handleDemo}
+                disabled={loading}
+                style={{ width: '100%', padding: '15px 20px', fontSize: 15.5, borderRadius: 'var(--radius-md)' }}
+              >
+                Entrar como demo
+              </Button>
+              <p style={{ margin: '10px 2px 0', color: 'var(--color-text-muted)', fontSize: 12.5, lineHeight: 1.45 }}>
+                Acceso de prueba con datos de demostración. No necesitás credenciales.
+              </p>
+            </motion.div>
+          )}
 
           <motion.div variants={item} style={{ display: 'flex', alignItems: 'center', gap: 14, margin: '28px 0 22px' }}>
             <div style={{ flex: 1, height: 1, background: 'var(--color-border-subtle)' }} />

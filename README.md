@@ -49,6 +49,35 @@ cd Backend/gym
 Requiere Docker (Testcontainers levanta un PostgreSQL desechable para las
 pruebas de integración). El frontend todavía no tiene suite de pruebas.
 
+## Servidor MCP de Supabase (opcional)
+
+Solo hace falta si trabajas el proyecto con un agente (Claude Code y similares)
+y quieres que consulte la base de Supabase directamente.
+
+1. Copia el ejemplo: `cp .mcp.json.example .mcp.json` (PowerShell:
+   `Copy-Item .mcp.json.example .mcp.json`)
+2. Exporta la referencia del proyecto — la encuentras en el panel de Supabase,
+   en Project Settings, o como subdominio de la URL del proyecto:
+
+   ```
+   export SUPABASE_PROJECT_REF=<project-ref>          # bash/zsh
+   $env:SUPABASE_PROJECT_REF = "<project-ref>"        # PowerShell
+   ```
+
+   El agente expande `${SUPABASE_PROJECT_REF}` al leer `.mcp.json`, así que la
+   referencia nunca se escribe en un archivo versionado.
+3. Autentícate con `/mcp` dentro del agente. El token viaja por OAuth y se
+   guarda fuera del repositorio.
+
+`.mcp.json` está en `.gitignore`: la configuración es local de cada quien y el
+repositorio es público. Versiona solo el `.example`.
+
+Si el servidor aparece como fallido en `/mcp` justo después de clonar, casi
+siempre es que `SUPABASE_PROJECT_REF` no está definida en el entorno desde el
+que arrancaste el agente: la URL queda con el literal `${SUPABASE_PROJECT_REF}`
+sin expandir y la conexión no resuelve. Defínela y reinicia el agente — las
+variables se leen al arrancar, no al reconectar.
+
 ## Variables de entorno
 
 ### Backend (`Backend/gym/.env`)
