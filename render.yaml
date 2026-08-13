@@ -1,0 +1,42 @@
+# Blueprint de Render para la API de GymOne.
+# En Render: New > Blueprint > conecta este repositorio. Las variables marcadas
+# como sync:false las pide el panel al crear el servicio y no se versionan.
+services:
+  - type: web
+    name: gymone-api
+    runtime: docker
+    repo: https://github.com/Chxng007/GymOne
+    branch: main
+    # Ohio es la región gratuita más cercana a ca-central-1, donde vive la base
+    # de Supabase. Cada consulta JDBC paga ese viaje de ida y vuelta.
+    region: ohio
+    plan: free
+    rootDir: Backend/gym
+    dockerfilePath: ./Dockerfile
+    envVars:
+      # Sin esto, spring-boot-docker-compose intenta levantar compose.yaml
+      # dentro del contenedor y el arranque falla.
+      - key: DOCKER_COMPOSE_ENABLED
+        value: "false"
+      # La instancia gratuita tiene 512 MB; que la JVM no se pase de la raya.
+      - key: JAVA_TOOL_OPTIONS
+        value: "-XX:MaxRAMPercentage=70"
+      - key: DB_POOL_SIZE
+        value: "5"
+      # JwtUtil hace Decoders.BASE64.decode() y exige >=32 bytes ya decodificados,
+      # así que no sirve cualquier cadena aleatoria: genérala con
+      #   openssl rand -base64 48
+      - key: JWT_SECRET
+        sync: false
+      - key: DB_URL
+        sync: false
+      - key: DB_USERNAME
+        sync: false
+      - key: DB_PASSWORD
+        sync: false
+      - key: ADMIN_EMAIL
+        sync: false
+      - key: ADMIN_PASSWORD
+        sync: false
+      - key: CORS_ALLOWED_ORIGINS
+        sync: false
