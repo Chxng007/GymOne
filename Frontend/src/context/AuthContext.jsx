@@ -1,5 +1,5 @@
 import { createContext, useContext, useMemo, useState } from 'react'
-import { login as loginRequest } from '../services/authService'
+import { login as loginRequest, loginDemo as loginDemoRequest } from '../services/authService'
 
 const AuthContext = createContext(null)
 
@@ -13,8 +13,7 @@ export function AuthProvider({ children }) {
     return stored ? JSON.parse(stored) : null
   })
 
-  async function login(correo, contrasena, remember = true) {
-    const data = await loginRequest(correo, contrasena)
+  function abrirSesion(data, remember) {
     const loggedUser = { nombre: data.nombre, correo: data.correo, rol: data.rol }
     const storage = remember ? localStorage : sessionStorage
 
@@ -22,6 +21,15 @@ export function AuthProvider({ children }) {
     storage.setItem(USER_KEY, JSON.stringify(loggedUser))
     setToken(data.token)
     setUser(loggedUser)
+  }
+
+  async function login(correo, contrasena, remember = true) {
+    abrirSesion(await loginRequest(correo, contrasena), remember)
+  }
+
+  // La sesión de invitado no se recuerda: al cerrar la pestaña se va.
+  async function loginDemo() {
+    abrirSesion(await loginDemoRequest(), false)
   }
 
   function logout() {
@@ -34,7 +42,7 @@ export function AuthProvider({ children }) {
   }
 
   const value = useMemo(
-    () => ({ token, user, isAuthenticated: !!token, login, logout }),
+    () => ({ token, user, isAuthenticated: !!token, login, loginDemo, logout }),
     [token, user],
   )
 

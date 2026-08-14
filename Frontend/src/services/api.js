@@ -1,8 +1,17 @@
 import axios from 'axios'
 import { TOKEN_KEY, USER_KEY } from '../context/AuthContext'
 
+// La API cuelga siempre de /api. Aceptamos VITE_API_URL con o sin ese sufijo
+// porque el valor puede venir de dos sitios que no siempre coinciden: el
+// .env.production del repo y las variables del panel de Vercel, que lo pisan.
+function resolverBaseURL() {
+  const raw = (import.meta.env.VITE_API_URL ?? '').trim().replace(/\/+$/, '')
+  if (!raw) return '/api'
+  return raw.endsWith('/api') ? raw : `${raw}/api`
+}
+
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL,
+  baseURL: resolverBaseURL(),
 })
 
 api.interceptors.request.use((config) => {

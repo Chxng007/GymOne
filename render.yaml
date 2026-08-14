@@ -23,6 +23,10 @@ services:
         value: "-XX:MaxRAMPercentage=70"
       - key: DB_POOL_SIZE
         value: "5"
+      # Este despliegue es una demo pública: cualquiera entra sin credenciales.
+      # Para una instalación real de un gimnasio, ponlo en false.
+      - key: DEMO_ENABLED
+        value: "true"
       # JwtUtil hace Decoders.BASE64.decode() y exige >=32 bytes ya decodificados,
       # así que no sirve cualquier cadena aleatoria: genérala con
       #   openssl rand -base64 48

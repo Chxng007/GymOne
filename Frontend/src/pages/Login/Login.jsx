@@ -101,12 +101,6 @@ function fieldStyle(hasIcon) {
   }
 }
 
-// Acceso de demostración. El botón solo aparece si ambas variables están
-// definidas, así que en un despliegue real basta con no declararlas.
-const DEMO_EMAIL = import.meta.env.VITE_DEMO_EMAIL
-const DEMO_PASSWORD = import.meta.env.VITE_DEMO_PASSWORD
-const DEMO_ENABLED = Boolean(DEMO_EMAIL && DEMO_PASSWORD)
-
 const container = {
   hidden: {},
   show: { transition: { staggerChildren: 0.07, delayChildren: 0.1 } },
@@ -118,7 +112,7 @@ const item = {
 }
 
 export function Login() {
-  const { login } = useAuth()
+  const { login, loginDemo } = useAuth()
   const { showToast } = useToast()
   const { cover, reveal } = useTransition()
   const navigate = useNavigate()
@@ -134,11 +128,11 @@ export function Login() {
   )
   const [loading, setLoading] = useState(false)
 
-  async function entrar(email, password, recordar) {
+  async function entrar(abrirSesion, mensajeDeError) {
     setError('')
     setLoading(true)
     try {
-      await login(email, password, recordar)
+      await abrirSesion()
       const rect = buttonRef.current?.getBoundingClientRect()
       const origin = rect
         ? { x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 }
@@ -147,18 +141,21 @@ export function Login() {
       navigate('/dashboard', { replace: true })
       await reveal()
     } catch {
-      setError('Correo o contraseña inválidos')
+      setError(mensajeDeError)
       setLoading(false)
     }
   }
 
   async function handleSubmit(e) {
     e.preventDefault()
-    await entrar(correo, contrasena, remember)
-  }
 
-  async function handleDemo() {
-    await entrar(DEMO_EMAIL, DEMO_PASSWORD, false)
+    // Los dos campos vacíos son la puerta de invitado: se entra sin credenciales.
+    if (!correo.trim() && !contrasena) {
+      await entrar(loginDemo, 'No se pudo abrir la sesión de invitado. Intentá de nuevo.')
+      return
+    }
+
+    await entrar(() => login(correo, contrasena, remember), 'Correo o contraseña inválidos')
   }
 
   function handleOlvidasteContrasena(e) {
@@ -300,7 +297,6 @@ export function Login() {
                 placeholder="vos@gimnasio.com"
                 value={correo}
                 onChange={(e) => setCorreo(e.target.value)}
-                required
                 className="ui-field"
                 style={fieldStyle(true)}
               />
@@ -318,7 +314,6 @@ export function Login() {
                 placeholder="••••••••"
                 value={contrasena}
                 onChange={(e) => setContrasena(e.target.value)}
-                required
                 className="ui-field"
                 style={{ ...fieldStyle(true), paddingRight: 46 }}
               />
@@ -402,22 +397,23 @@ export function Login() {
             </Button>
           </motion.div>
 
-          {DEMO_ENABLED && (
-            <motion.div variants={item} whileHover={{ scale: 1.015 }} whileTap={{ scale: 0.985 }} style={{ marginTop: 12 }}>
-              <Button
-                type="button"
-                variant="secondary"
-                onClick={handleDemo}
-                disabled={loading}
-                style={{ width: '100%', padding: '15px 20px', fontSize: 15.5, borderRadius: 'var(--radius-md)' }}
-              >
-                Entrar como demo
-              </Button>
-              <p style={{ margin: '10px 2px 0', color: 'var(--color-text-muted)', fontSize: 12.5, lineHeight: 1.45 }}>
-                Acceso de prueba con datos de demostración. No necesitás credenciales.
-              </p>
-            </motion.div>
-          )}
+          <motion.p
+            variants={item}
+            style={{
+              margin: '14px 0 0',
+              padding: '11px 13px',
+              background: 'rgba(56,189,248,0.07)',
+              border: '1px solid rgba(56,189,248,0.22)',
+              borderRadius: 8,
+              color: 'var(--color-text-secondary)',
+              fontSize: 12.5,
+              lineHeight: 1.5,
+            }}
+          >
+            Podés ingresar sin credenciales: dejá los campos vacíos y tocá{' '}
+            <strong style={{ color: 'var(--color-text)', fontWeight: 600 }}>Iniciar sesión</strong>. Es un acceso de
+            invitado, solo para que puedas visualizar lo que hay dentro.
+          </motion.p>
 
           <motion.div variants={item} style={{ display: 'flex', alignItems: 'center', gap: 14, margin: '28px 0 22px' }}>
             <div style={{ flex: 1, height: 1, background: 'var(--color-border-subtle)' }} />
