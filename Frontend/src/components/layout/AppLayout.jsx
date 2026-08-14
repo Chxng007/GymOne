@@ -22,7 +22,7 @@ function AvisoInvitado() {
         lineHeight: 1.4,
       }}
     >
-      <span aria-hidden="true">👁️</span>
+      <span aria-hidden="true"></span>
       <span>
         <strong style={{ color: 'var(--color-text)', fontWeight: 600 }}>Modo invitado.</strong> Podés recorrer toda la
         plataforma, pero los cambios no se guardan.
