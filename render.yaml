@@ -13,14 +13,25 @@ services:
     plan: free
     rootDir: Backend/gym
     dockerfilePath: ./Dockerfile
+    # Sin esto Render solo mira si el puerto está abierto, que sigue estándolo
+    # aunque la aplicación esté atascada. Apunta a la sonda que NO consulta la
+    # base: un corte de Supabase no debe provocar reinicios en cadena.
+    healthCheckPath: /api/salud/vida
     envVars:
       # Sin esto, spring-boot-docker-compose intenta levantar compose.yaml
       # dentro del contenedor y el arranque falla.
       - key: DOCKER_COMPOSE_ENABLED
         value: "false"
-      # La instancia gratuita tiene 512 MB; que la JVM no se pase de la raya.
+      # La instancia gratuita tiene 512 MB y el heap no es lo único que gasta:
+      # metaspace, pilas de hilos y buffers nativos van por fuera. Con el 70%
+      # anterior (~358 MB de heap) la suma se pasaba de 512 con facilidad, y ahí
+      # el kernel mata el proceso sin avisar. El 55% deja margen para el resto.
       - key: JAVA_TOOL_OPTIONS
-        value: "-XX:MaxRAMPercentage=70"
+        value: "-XX:MaxRAMPercentage=55 -XX:MaxMetaspaceSize=128m -Xss512k"
+      # Tomcat abre 200 hilos por defecto. Para una demo sobran, y cada uno
+      # reserva su pila.
+      - key: TOMCAT_MAX_THREADS
+        value: "20"
       - key: DB_POOL_SIZE
         value: "5"
       # Este despliegue es una demo pública: cualquiera entra sin credenciales.

@@ -168,8 +168,13 @@ export function Login() {
       await reveal()
     } catch (fallo) {
       // Sin `response` el backend nunca contestó: está arrancando o no hay red.
-      // Culpar a las credenciales ahí sería señalar un error que no ocurrió.
-      setError(fallo.response ? mensajeDeError : 'El servidor está arrancando. Probá de nuevo en un momento.')
+      // Culpar a las credenciales ahí sería señalar un error que no ocurrió. El
+      // aviso lo da el cartel de arranque, no un error rojo encima de él.
+      if (fallo.response) {
+        setError(mensajeDeError)
+      } else {
+        setServidor('despertando')
+      }
       setLoading(false)
     }
   }
@@ -456,7 +461,7 @@ export function Login() {
                     <>
                       <strong style={{ color: 'var(--color-text)', fontWeight: 600 }}>Despertando el servidor…</strong>{' '}
                       La demo corre en un plan gratuito que se apaga cuando nadie la visita. Tarda cerca de un minuto en
-                      volver; el formulario se habilita solo.
+                      volver; este aviso desaparece solo cuando responde.
                     </>
                   ) : (
                     <>
@@ -470,13 +475,16 @@ export function Login() {
           </AnimatePresence>
 
           <motion.div variants={item} whileHover={{ scale: 1.015 }} whileTap={{ scale: 0.985 }} style={{ marginTop: 26 }}>
+            {/* El botón no se bloquea por la sonda: si ella se equivoca, quien
+                visita queda encerrado fuera de una demo que sí funcionaba. El
+                cartel avisa de la espera; intentarlo igual sigue siendo cosa suya. */}
             <Button
               ref={buttonRef}
               type="submit"
-              disabled={loading || servidor === 'despertando'}
+              disabled={loading}
               style={{ width: '100%', padding: '15px 20px', fontSize: 15.5, borderRadius: 'var(--radius-md)' }}
             >
-              {servidor === 'despertando' ? 'Despertando el servidor...' : loading ? 'Ingresando...' : 'Iniciar sesión'}
+              {loading ? 'Ingresando...' : 'Iniciar sesión'}
             </Button>
           </motion.div>
 

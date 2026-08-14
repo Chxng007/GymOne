@@ -63,9 +63,10 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers("/api/registro-publico/**").permitAll()
-                        // La sonda la llama un cron externo sin credenciales, y el
-                        // login la consulta antes de que exista ningún token.
-                        .requestMatchers("/api/salud").permitAll()
+                        // Las sondas las llaman sin credenciales un cron externo y
+                        // el health check de Render, y el login consulta la suya
+                        // antes de que exista ningún token.
+                        .requestMatchers("/api/salud/**").permitAll()
                         .anyRequest().authenticated())
                 .authenticationProvider(authenticationProvider())
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)

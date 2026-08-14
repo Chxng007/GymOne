@@ -2,11 +2,16 @@ import api from './api'
 
 // Render apaga la instancia gratuita tras 15 minutos sin tráfico. La primera
 // petición que llega después no falla: se queda colgada hasta que el contenedor
-// arranca, cerca de un minuto. Un timeout corto separa "dormido" de "listo" sin
-// estorbar ese arranque, que ya va por su cuenta del lado de Render.
-const TIMEOUT_SONDA_MS = 8000
-const REINTENTO_MS = 3000
-const ESPERA_MAXIMA_MS = 150000
+// arranca, cerca de un minuto.
+//
+// El timeout tiene que ser holgado. Abortar del lado del navegador no cancela el
+// trabajo del servidor: la petición sigue viva allí, esperando su conexión a la
+// base. Con un timeout corto, cada reintento apila una petición más que nadie
+// recoge, y el hilo y la conexión se quedan retenidos. Vale más esperar de sobra
+// y preguntar poco que declarar "dormido" un servidor que solo iba lento.
+const TIMEOUT_SONDA_MS = 30000
+const REINTENTO_MS = 8000
+const ESPERA_MAXIMA_MS = 180000
 
 const dormir = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
 

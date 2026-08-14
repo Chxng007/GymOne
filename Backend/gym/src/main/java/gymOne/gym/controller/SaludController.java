@@ -44,4 +44,18 @@ public class SaludController {
                     .body(new SaludResponse("ok", "error"));
         }
     }
+
+    /**
+     * Señal de vida sin tocar la base, para el health check de Render.
+     *
+     * <p>Va aparte de la sonda de arriba a propósito. Render reinicia el
+     * contenedor cuando su health check falla, así que si apuntara a una
+     * comprobación que incluye la base, un corte de Supabase de dos minutos
+     * provocaría reinicios en cadena de una aplicación que estaba perfectamente
+     * sana. Aquí solo se responde a una pregunta: ¿el proceso sigue en pie?
+     */
+    @GetMapping("/vida")
+    public SaludResponse vida() {
+        return new SaludResponse("ok", "sin comprobar");
+    }
 }
