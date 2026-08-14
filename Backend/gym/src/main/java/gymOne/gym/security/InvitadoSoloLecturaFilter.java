@@ -28,8 +28,13 @@ public class InvitadoSoloLecturaFilter extends OncePerRequestFilter {
 
     private static final Set<String> METODOS_DE_LECTURA = Set.of("GET", "HEAD", "OPTIONS");
 
+    /**
+     * El "codigo" es para que el frontend lo reconozca sin comparar textos: el
+     * mensaje puede reescribirse sin romper a quien lo consume.
+     */
     private static final String CUERPO_RECHAZO = """
-            {"error":"Estás en modo invitado: podés ver todo, pero no guardar cambios."}""";
+            {"codigo":"INVITADO_SOLO_LECTURA",\
+            "error":"Estás en modo invitado: podés ver todo, pero no guardar cambios."}""";
 
     @Value("${app.demo.enabled}")
     private boolean demoEnabled;
