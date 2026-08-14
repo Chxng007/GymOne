@@ -6,6 +6,7 @@ import { LogoMark } from '../../components/ui/LogoMark'
 import { useAuth } from '../../context/AuthContext'
 import { useToast } from '../../context/ToastContext'
 import { useTransition } from '../../context/TransitionContext'
+import { backendDespierto, esperarBackend } from '../../services/salud'
 import gymHero from '../../assets/gym-hero.png'
 
 const EyeIcon = () => (
@@ -127,6 +128,31 @@ export function Login() {
     searchParams.get('sesion') === 'expirada' ? 'Tu sesión expiró. Vuelve a iniciar sesión.' : '',
   )
   const [loading, setLoading] = useState(false)
+  // 'listo' de entrada: mientras la sonda no diga lo contrario, no hay motivo
+  // para entorpecer a quien llega con el servidor ya caliente.
+  const [servidor, setServidor] = useState('listo')
+
+  // El despliegue público corre en la capa gratuita de Render, que apaga la
+  // instancia sin tráfico. Sin este aviso, el primer visitante del día se
+  // encuentra un formulario que no responde y se va pensando que está roto.
+  useEffect(() => {
+    let vivo = true
+
+    async function comprobar() {
+      if (await backendDespierto()) return
+
+      if (!vivo) return
+      setServidor('despertando')
+
+      const listo = await esperarBackend(() => vivo)
+      if (vivo) setServidor(listo ? 'listo' : 'caido')
+    }
+
+    comprobar()
+    return () => {
+      vivo = false
+    }
+  }, [])
 
   async function entrar(abrirSesion, mensajeDeError) {
     setError('')
@@ -140,8 +166,10 @@ export function Login() {
       await cover(origin)
       navigate('/dashboard', { replace: true })
       await reveal()
-    } catch {
-      setError(mensajeDeError)
+    } catch (fallo) {
+      // Sin `response` el backend nunca contestó: está arrancando o no hay red.
+      // Culpar a las credenciales ahí sería señalar un error que no ocurrió.
+      setError(fallo.response ? mensajeDeError : 'El servidor está arrancando. Probá de nuevo en un momento.')
       setLoading(false)
     }
   }
@@ -391,9 +419,64 @@ export function Login() {
             )}
           </AnimatePresence>
 
+          <AnimatePresence>
+            {servidor !== 'listo' && (
+              <motion.div
+                initial={{ opacity: 0, height: 0, marginTop: 0 }}
+                animate={{ opacity: 1, height: 'auto', marginTop: 18 }}
+                exit={{ opacity: 0, height: 0, marginTop: 0 }}
+                style={{
+                  display: 'flex',
+                  alignItems: 'flex-start',
+                  gap: 10,
+                  color: 'var(--color-text-secondary)',
+                  background: 'rgba(250,204,21,0.07)',
+                  border: '1px solid rgba(250,204,21,0.25)',
+                  borderRadius: 8,
+                  padding: '11px 13px',
+                  fontSize: 12.5,
+                  lineHeight: 1.5,
+                  overflow: 'hidden',
+                }}
+              >
+                <motion.span
+                  animate={servidor === 'despertando' ? { opacity: [1, 0.25, 1] } : { opacity: 1 }}
+                  transition={{ duration: 1.4, repeat: Infinity, ease: 'easeInOut' }}
+                  style={{
+                    width: 8,
+                    height: 8,
+                    borderRadius: '50%',
+                    background: servidor === 'despertando' ? '#FACC15' : 'var(--color-danger)',
+                    flexShrink: 0,
+                    marginTop: 5,
+                  }}
+                />
+                <span>
+                  {servidor === 'despertando' ? (
+                    <>
+                      <strong style={{ color: 'var(--color-text)', fontWeight: 600 }}>Despertando el servidor…</strong>{' '}
+                      La demo corre en un plan gratuito que se apaga cuando nadie la visita. Tarda cerca de un minuto en
+                      volver; el formulario se habilita solo.
+                    </>
+                  ) : (
+                    <>
+                      <strong style={{ color: 'var(--color-text)', fontWeight: 600 }}>El servidor no responde.</strong>{' '}
+                      Recargá la página en unos minutos.
+                    </>
+                  )}
+                </span>
+              </motion.div>
+            )}
+          </AnimatePresence>
+
           <motion.div variants={item} whileHover={{ scale: 1.015 }} whileTap={{ scale: 0.985 }} style={{ marginTop: 26 }}>
-            <Button ref={buttonRef} type="submit" disabled={loading} style={{ width: '100%', padding: '15px 20px', fontSize: 15.5, borderRadius: 'var(--radius-md)' }}>
-              {loading ? 'Ingresando...' : 'Iniciar sesión'}
+            <Button
+              ref={buttonRef}
+              type="submit"
+              disabled={loading || servidor === 'despertando'}
+              style={{ width: '100%', padding: '15px 20px', fontSize: 15.5, borderRadius: 'var(--radius-md)' }}
+            >
+              {servidor === 'despertando' ? 'Despertando el servidor...' : loading ? 'Ingresando...' : 'Iniciar sesión'}
             </Button>
           </motion.div>
 
