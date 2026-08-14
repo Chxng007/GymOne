@@ -17,6 +17,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.http.HttpStatus;
 
 import gymOne.gym.security.CustomUserDetailsService;
+import gymOne.gym.security.InvitadoSoloLecturaFilter;
 import gymOne.gym.security.JwtAuthFilter;
 
 @Configuration
@@ -25,10 +26,13 @@ import gymOne.gym.security.JwtAuthFilter;
 public class SecurityConfig {
 
     private final JwtAuthFilter jwtAuthFilter;
+    private final InvitadoSoloLecturaFilter invitadoSoloLecturaFilter;
     private final CustomUserDetailsService userDetailsService;
 
-    public SecurityConfig(JwtAuthFilter jwtAuthFilter, CustomUserDetailsService userDetailsService) {
+    public SecurityConfig(JwtAuthFilter jwtAuthFilter, InvitadoSoloLecturaFilter invitadoSoloLecturaFilter,
+            CustomUserDetailsService userDetailsService) {
         this.jwtAuthFilter = jwtAuthFilter;
+        this.invitadoSoloLecturaFilter = invitadoSoloLecturaFilter;
         this.userDetailsService = userDetailsService;
     }
 
@@ -61,7 +65,10 @@ public class SecurityConfig {
                         .requestMatchers("/api/registro-publico/**").permitAll()
                         .anyRequest().authenticated())
                 .authenticationProvider(authenticationProvider())
-                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
+                // Después del JWT: necesita el SecurityContext ya poblado para saber
+                // quién está pidiendo la escritura.
+                .addFilterAfter(invitadoSoloLecturaFilter, JwtAuthFilter.class);
 
         return http.build();
     }

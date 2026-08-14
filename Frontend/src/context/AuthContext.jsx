@@ -14,7 +14,7 @@ export function AuthProvider({ children }) {
   })
 
   function abrirSesion(data, remember) {
-    const loggedUser = { nombre: data.nombre, correo: data.correo, rol: data.rol }
+    const loggedUser = { nombre: data.nombre, correo: data.correo, rol: data.rol, invitado: !!data.invitado }
     const storage = remember ? localStorage : sessionStorage
 
     storage.setItem(TOKEN_KEY, data.token)

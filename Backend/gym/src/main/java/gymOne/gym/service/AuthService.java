@@ -51,7 +51,12 @@ public class AuthService {
 
         String token = jwtUtil.generateToken(usuario.getCorreo());
 
-        return new LoginResponse(token, usuario.getNombre(), usuario.getCorreo(), usuario.getRol().name());
+        return new LoginResponse(token, usuario.getNombre(), usuario.getCorreo(), usuario.getRol().name(),
+                esInvitado(usuario.getCorreo()));
+    }
+
+    private boolean esInvitado(String correo) {
+        return demoEnabled && demoEmail.equalsIgnoreCase(correo);
     }
 
     /**
@@ -67,7 +72,7 @@ public class AuthService {
         Usuario demo = usuarioRepository.findByCorreo(demoEmail).orElseGet(this::crearInvitado);
         String token = jwtUtil.generateToken(demo.getCorreo());
 
-        return new LoginResponse(token, demo.getNombre(), demo.getCorreo(), demo.getRol().name());
+        return new LoginResponse(token, demo.getNombre(), demo.getCorreo(), demo.getRol().name(), true);
     }
 
     private Usuario crearInvitado() {
